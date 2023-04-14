@@ -10,9 +10,12 @@ import operator
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import random
 
-from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA
+from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
+from datasets.maskbasedataset import MaskBaseDataset
 from utils import get_model_from_sd, test_model_on_dataset
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -25,7 +28,7 @@ def parse_arguments():
     parser.add_argument(
         "--model-location",
         type=str,
-        default=os.path.expanduser('~/ssd/checkpoints/soups'),
+        default=os.path.expanduser('/opt/ml/model-soups/model'),
         help="Where to download the models.",
     )
     parser.add_argument(
@@ -51,18 +54,46 @@ def parse_arguments():
     parser.add_argument(
         "--workers",
         type=int,
-        default=8,
+        default=4,
+    )
+    
+    parser.add_argument(
+        "--random-seed", 
+        type=int,
+        default=42,
+    )
+    parser.add_argument(
+        "--name",
+        default='finetune_cp'
     )
     return parser.parse_args()
 
-
-
 if __name__ == '__main__':
     args = parse_arguments()
-    NUM_MODELS = 72
-    INDIVIDUAL_MODEL_RESULTS_FILE = 'individual_model_results.jsonl'
-    UNIFORM_SOUP_RESULTS_FILE = 'uniform_soup_results.jsonl'
-    GREEDY_SOUP_RESULTS_FILE = 'greedy_soup_results.jsonl'
+
+    ###############입력하세요##############
+    NUM_MODELS = 3
+    epoch = 10
+    val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
+    ######################################
+    
+    model_name = args.name 
+
+    if args.random_seed != -1 : 
+        torch.manual_seed(args.random_seed)
+        torch.cuda.manual_seed(args.random_seed)
+        torch.cuda.manual_seed_all(args.random_seed)  # if use multi-GPU
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        np.random.seed(args.random_seed)
+        random.seed(args.random_seed)
+
+
+    INDIVIDUAL_MODEL_RESULTS_FILE = f'logs/individual_results_{model_name}_num{NUM_MODELS}_epoch{epoch}.jsonl'
+    GREEDY_SOUP_LOG_FILE = f'logs/greedy_soup_log_{model_name}_num{NUM_MODELS}_epoch{epoch}.txt'
+
+    UNIFORM_SOUP_RESULTS_FILE = 'logs/uniform_soup_results.jsonl'
+    GREEDY_SOUP_RESULTS_FILE = 'logs/greedy_soup_results.jsonl'
 
     # Step 1: Download models.
     if args.download_models:
@@ -75,29 +106,30 @@ if __name__ == '__main__':
                 out=args.model_location
                 )
 
-    model_paths = [os.path.join(args.model_location, f'model_{i}.pt') for i in range(NUM_MODELS)]
+    model_paths = [os.path.join(args.model_location, f'{model_name}{i}_epoch{epoch}.pt') for i in range(NUM_MODELS)]
 
     # Step 2: Evaluate individual models.
     if args.eval_individual_models or args.uniform_soup or args.greedy_soup:
         base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
 
     if args.eval_individual_models:
-        if os.path.exists(INDIVIDUAL_MODEL_RESULTS_FILE):
-            os.remove(INDIVIDUAL_MODEL_RESULTS_FILE)
+        # if os.path.exists(INDIVIDUAL_MODEL_RESULTS_FILE):
+            # os.remove(INDIVIDUAL_MODEL_RESULTS_FILE)
         for j, model_path in enumerate(model_paths):
-            assert os.path.exists(model_path)
+            # assert os.path.exists(model_path)
             state_dict = torch.load(model_path, map_location=torch.device('cpu'))
             model = get_model_from_sd(state_dict, base_model)
 
-            results = {'model_name' : f'model_{j}'}
+            results = {'model_name' : f'{model_name}{j}_epoch{epoch}'}
             # Note: ImageNet2p is the held-out minival set from ImageNet train that we use.
             # It is called 2p for 2 percent of ImageNet, or 26k images.
             # See utils on how this dataset is handled slightly differently.
-            for dataset_cls in [ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA]:
+            for dataset_cls in [MaskBaseDataset]:  #[ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA]:
 
                 print(f'Evaluating model {j} of {NUM_MODELS - 1} on {dataset_cls.__name__}.')
 
-                dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
+                # dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
+                dataset = dataset_cls(batch_size=args.batch_size, val_ratio=val_ratio)
                 accuracy = test_model_on_dataset(model, dataset)
                 results[dataset_cls.__name__] = accuracy
                 print(accuracy)
@@ -140,15 +172,15 @@ if __name__ == '__main__':
 
     # Step 4: Greedy Soup.
     if args.greedy_soup:
-        if os.path.exists(GREEDY_SOUP_RESULTS_FILE):
-            os.remove(GREEDY_SOUP_RESULTS_FILE)
+        # if os.path.exists(GREEDY_SOUP_RESULTS_FILE):
+        #     os.remove(GREEDY_SOUP_RESULTS_FILE)
 
         # Sort models by decreasing accuracy on the held-out validation set ImageNet2p
         # (We call the held out-val set ImageNet2p because it is 2 percent of ImageNet train)
         individual_model_db = pd.read_json(INDIVIDUAL_MODEL_RESULTS_FILE, lines=True)
         individual_model_val_accs = {}
         for _, row in individual_model_db.iterrows():
-            individual_model_val_accs[row['model_name']] = row['ImageNet2p']
+            individual_model_val_accs[row['model_name']] = row['MaskBaseDataset']
         individual_model_val_accs = sorted(individual_model_val_accs.items(), key=operator.itemgetter(1))
         individual_model_val_accs.reverse()
         sorted_models = [x[0] for x in individual_model_val_accs]
@@ -157,7 +189,8 @@ if __name__ == '__main__':
         greedy_soup_ingredients = [sorted_models[0]]
         greedy_soup_params = torch.load(os.path.join(args.model_location, f'{sorted_models[0]}.pt'))
         best_val_acc_so_far = individual_model_val_accs[0][1]
-        held_out_val_set = ImageNet2p(preprocess, args.data_location, args.batch_size, args.workers)
+        # held_out_val_set = ImageNet2p(preprocess, args.data_location, args.batch_size, args.workers)
+        held_out_val_set = MaskBaseDataset(batch_size=256)
 
         # Now, iterate through all models and consider adding them to the greedy soup.
         for i in range(1, NUM_MODELS):
@@ -177,25 +210,35 @@ if __name__ == '__main__':
             held_out_val_accuracy = test_model_on_dataset(model, held_out_val_set)
 
             # If accuracy on the held-out val set increases, add the new model to the greedy soup.
-            print(f'Potential greedy soup val acc {held_out_val_accuracy}, best so far {best_val_acc_so_far}.')
-            if held_out_val_accuracy > best_val_acc_so_far:
-                greedy_soup_ingredients.append(sorted_models[i])
-                best_val_acc_so_far = held_out_val_accuracy
-                greedy_soup_params = potential_greedy_soup_params
-                print(f'Adding to soup. New soup is {greedy_soup_ingredients}')
+            with open(GREEDY_SOUP_LOG_FILE, 'a+') as f:
+                print(f'Potential greedy soup val acc {held_out_val_accuracy}, best so far {best_val_acc_so_far}.')
+                f.write(f'Potential greedy soup val acc {held_out_val_accuracy}, best so far {best_val_acc_so_far}.\n')
+                if held_out_val_accuracy > best_val_acc_so_far:
+                    greedy_soup_ingredients.append(sorted_models[i])
+                    best_val_acc_so_far = held_out_val_accuracy
+                    greedy_soup_params = potential_greedy_soup_params
+                    print(f'Adding to soup. New soup is {greedy_soup_ingredients}')
+                    f.write(f'Adding to soup. New soup is {greedy_soup_ingredients}\n')
+
 
         # Finally, evaluate the greedy soup.
         model = get_model_from_sd(greedy_soup_params, base_model)
-        results = {'model_name' : f'greedy_soup'}
-        for dataset_cls in [ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA]:
-            print(f'Evaluating on {dataset_cls.__name__}.')
-            dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
-            accuracy = test_model_on_dataset(model, dataset)
-            results[dataset_cls.__name__] = accuracy
-            print(accuracy)
 
-        with open(GREEDY_SOUP_RESULTS_FILE, 'a+') as f:
-            f.write(json.dumps(results) + '\n')
+        # save final model
+        model_path = os.path.join(args.model_location, f'{model_name}_epoch{epoch}_greedysoup.pt')
+        print('Saving model to', model_path)
+        torch.save(model.module.state_dict(), model_path)
+
+        # results = {'model_name' : f'greedy_soup'}
+        # for dataset_cls in [ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA]:
+        #     print(f'Evaluating on {dataset_cls.__name__}.')
+        #     dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
+        #     accuracy = test_model_on_dataset(model, dataset)
+        #     results[dataset_cls.__name__] = accuracy
+        #     print(accuracy)
+
+        # with open(GREEDY_SOUP_RESULTS_FILE, 'a+') as f:
+        #     f.write(json.dumps(results) + '\n')
 
     # Step 5: Plot.
     if args.plot:
