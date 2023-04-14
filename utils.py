@@ -58,6 +58,8 @@ def test_model_on_dataset(model, dataset):
     with torch.no_grad():
         top1, correct, n = 0., 0., 0.
         end = time.time()
+
+
         loader = dataset.test_loader
         if type(dataset).__name__ == 'ImageNet2p':
             loader = dataset.train_loader
