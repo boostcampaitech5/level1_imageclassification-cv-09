@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
 
 
 class BaseModel(nn.Module):
@@ -31,3 +32,24 @@ class BaseModel(nn.Module):
         x = self.avgpool(x)
         x = x.view(-1, 128)
         return self.fc(x)
+
+
+class CustomModel(nn.Module):
+    def __init__(self, num_classes):
+        super().__init__()
+        self.resnet18 = models.resnet18(pretrained=True)
+
+        for param in self.resnet18.layer1.parameters():
+            param.requires_grad = False
+        for param in self.resnet18.layer2.parameters():
+            param.requires_grad = False
+
+        modules = list(self.resnet18.children())[:-1]
+        self.resnet18 = nn.Sequential(*modules)
+        self.fc = nn.Linear(512, num_classes)
+
+    def forward(self, x):
+        x = self.resnet18(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc(x)
+        return x

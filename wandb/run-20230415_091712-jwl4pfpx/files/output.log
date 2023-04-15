@@ -1,0 +1,662 @@
+Epoch[0/50](20/236) || training loss 2.386 || training accuracy 29.45% || lr 0.001
+Epoch[0/50](40/236) || training loss 1.636 || training accuracy 51.17% || lr 0.001
+Epoch[0/50](60/236) || training loss 1.466 || training accuracy 54.37% || lr 0.001
+Epoch[0/50](80/236) || training loss 1.406 || training accuracy 56.33% || lr 0.001
+Epoch[0/50](100/236) || training loss 1.32 || training accuracy 59.53% || lr 0.001
+Epoch[0/50](120/236) || training loss 1.262 || training accuracy 59.61% || lr 0.001
+Epoch[0/50](140/236) || training loss 1.189 || training accuracy 62.19% || lr 0.001
+Epoch[0/50](160/236) || training loss 1.191 || training accuracy 61.56% || lr 0.001
+Epoch[0/50](180/236) || training loss  1.2 || training accuracy 62.73% || lr 0.001
+Epoch[0/50](200/236) || training loss 1.23 || training accuracy 59.77% || lr 0.001
+Epoch[0/50](220/236) || training loss 1.141 || training accuracy 61.95% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 48.39%! saving the best model..
+[Val] acc : 48.39%, loss:  1.2 || best acc : 48.39%, best loss:  1.2
+Epoch[1/50](20/236) || training loss 1.088 || training accuracy 64.53% || lr 0.001
+Epoch[1/50](40/236) || training loss 1.058 || training accuracy 65.47% || lr 0.001
+Epoch[1/50](60/236) || training loss 1.006 || training accuracy 68.20% || lr 0.001
+Epoch[1/50](80/236) || training loss 1.046 || training accuracy 64.22% || lr 0.001
+Epoch[1/50](100/236) || training loss 1.033 || training accuracy 64.53% || lr 0.001
+Epoch[1/50](120/236) || training loss 1.005 || training accuracy 66.88% || lr 0.001
+Epoch[1/50](140/236) || training loss 1.011 || training accuracy 65.39% || lr 0.001
+Epoch[1/50](160/236) || training loss 1.013 || training accuracy 66.09% || lr 0.001
+Epoch[1/50](180/236) || training loss 1.006 || training accuracy 65.47% || lr 0.001
+Epoch[1/50](200/236) || training loss 1.058 || training accuracy 65.08% || lr 0.001
+Epoch[1/50](220/236) || training loss 0.9907 || training accuracy 67.11% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 52.22%! saving the best model..
+[Val] acc : 52.22%, loss:  1.0 || best acc : 52.22%, best loss:  1.0
+Epoch[2/50](20/236) || training loss 0.9348 || training accuracy 69.84% || lr 0.001
+Epoch[2/50](40/236) || training loss 0.9423 || training accuracy 67.89% || lr 0.001
+Epoch[2/50](60/236) || training loss 0.9514 || training accuracy 67.66% || lr 0.001
+Epoch[2/50](80/236) || training loss 0.923 || training accuracy 69.84% || lr 0.001
+Epoch[2/50](100/236) || training loss 0.9345 || training accuracy 68.59% || lr 0.001
+Epoch[2/50](120/236) || training loss 0.958 || training accuracy 67.50% || lr 0.001
+Epoch[2/50](140/236) || training loss 0.9852 || training accuracy 65.70% || lr 0.001
+Epoch[2/50](160/236) || training loss 0.9765 || training accuracy 66.17% || lr 0.001
+Epoch[2/50](180/236) || training loss 0.9408 || training accuracy 68.52% || lr 0.001
+Epoch[2/50](200/236) || training loss 0.9388 || training accuracy 68.44% || lr 0.001
+Epoch[2/50](220/236) || training loss 0.8721 || training accuracy 70.55% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 53.70%! saving the best model..
+[Val] acc : 53.70%, loss: 0.97 || best acc : 53.70%, best loss: 0.97
+Epoch[3/50](20/236) || training loss 0.8571 || training accuracy 71.72% || lr 0.001
+Epoch[3/50](40/236) || training loss 0.8659 || training accuracy 70.55% || lr 0.001
+Epoch[3/50](60/236) || training loss 0.9315 || training accuracy 68.20% || lr 0.001
+Epoch[3/50](80/236) || training loss 0.9124 || training accuracy 69.14% || lr 0.001
+Epoch[3/50](100/236) || training loss 0.9115 || training accuracy 68.20% || lr 0.001
+Epoch[3/50](120/236) || training loss 0.9111 || training accuracy 69.06% || lr 0.001
+Epoch[3/50](140/236) || training loss 0.9224 || training accuracy 68.59% || lr 0.001
+Epoch[3/50](160/236) || training loss 0.8951 || training accuracy 69.06% || lr 0.001
+Epoch[3/50](180/236) || training loss 0.892 || training accuracy 69.45% || lr 0.001
+Epoch[3/50](200/236) || training loss 0.8422 || training accuracy 72.34% || lr 0.001
+Epoch[3/50](220/236) || training loss 0.8857 || training accuracy 69.69% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 54.26%! saving the best model..
+[Val] acc : 54.26%, loss: 0.95 || best acc : 54.26%, best loss: 0.95
+Epoch[4/50](20/236) || training loss 0.8195 || training accuracy 72.03% || lr 0.001
+Epoch[4/50](40/236) || training loss 0.8254 || training accuracy 72.58% || lr 0.001
+Epoch[4/50](60/236) || training loss 0.831 || training accuracy 70.00% || lr 0.001
+Epoch[4/50](80/236) || training loss 0.909 || training accuracy 69.14% || lr 0.001
+Epoch[4/50](100/236) || training loss 0.8379 || training accuracy 71.02% || lr 0.001
+Epoch[4/50](120/236) || training loss 0.8537 || training accuracy 71.41% || lr 0.001
+Epoch[4/50](140/236) || training loss 0.8656 || training accuracy 70.86% || lr 0.001
+Epoch[4/50](160/236) || training loss 0.8441 || training accuracy 71.41% || lr 0.001
+Epoch[4/50](180/236) || training loss 0.8491 || training accuracy 70.39% || lr 0.001
+Epoch[4/50](200/236) || training loss 0.859 || training accuracy 70.39% || lr 0.001
+Epoch[4/50](220/236) || training loss 0.913 || training accuracy 67.73% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 54.68%! saving the best model..
+[Val] acc : 54.68%, loss: 0.93 || best acc : 54.68%, best loss: 0.93
+Epoch[5/50](20/236) || training loss 0.7635 || training accuracy 74.22% || lr 0.001
+Epoch[5/50](40/236) || training loss 0.8315 || training accuracy 70.08% || lr 0.001
+Epoch[5/50](60/236) || training loss 0.8298 || training accuracy 72.66% || lr 0.001
+Epoch[5/50](80/236) || training loss 0.8087 || training accuracy 71.64% || lr 0.001
+Epoch[5/50](100/236) || training loss 0.8176 || training accuracy 72.27% || lr 0.001
+Epoch[5/50](120/236) || training loss 0.8712 || training accuracy 70.16% || lr 0.001
+Epoch[5/50](140/236) || training loss 0.8538 || training accuracy 71.72% || lr 0.001
+Epoch[5/50](160/236) || training loss 0.853 || training accuracy 69.84% || lr 0.001
+Epoch[5/50](180/236) || training loss 0.8671 || training accuracy 69.77% || lr 0.001
+Epoch[5/50](200/236) || training loss 0.8263 || training accuracy 72.19% || lr 0.001
+Epoch[5/50](220/236) || training loss 0.852 || training accuracy 69.69% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 54.71%! saving the best model..
+[Val] acc : 54.71%, loss: 0.94 || best acc : 54.71%, best loss: 0.93
+Epoch[6/50](20/236) || training loss 0.8228 || training accuracy 72.50% || lr 0.001
+Epoch[6/50](40/236) || training loss 0.8115 || training accuracy 72.11% || lr 0.001
+Epoch[6/50](60/236) || training loss 0.7808 || training accuracy 72.73% || lr 0.001
+Epoch[6/50](80/236) || training loss 0.8629 || training accuracy 69.06% || lr 0.001
+Epoch[6/50](100/236) || training loss 0.7734 || training accuracy 74.14% || lr 0.001
+Epoch[6/50](120/236) || training loss 0.8098 || training accuracy 71.64% || lr 0.001
+Epoch[6/50](140/236) || training loss 0.8598 || training accuracy 70.55% || lr 0.001
+Epoch[6/50](160/236) || training loss 0.8486 || training accuracy 71.48% || lr 0.001
+Epoch[6/50](180/236) || training loss 0.7685 || training accuracy 73.59% || lr 0.001
+Epoch[6/50](200/236) || training loss 0.8182 || training accuracy 71.95% || lr 0.001
+Epoch[6/50](220/236) || training loss 0.7954 || training accuracy 73.52% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 54.79%! saving the best model..
+[Val] acc : 54.79%, loss: 0.95 || best acc : 54.79%, best loss: 0.93
+Epoch[7/50](20/236) || training loss 0.7905 || training accuracy 73.28% || lr 0.001
+Epoch[7/50](40/236) || training loss 0.7935 || training accuracy 72.34% || lr 0.001
+Epoch[7/50](60/236) || training loss 0.7853 || training accuracy 72.89% || lr 0.001
+Epoch[7/50](80/236) || training loss 0.8085 || training accuracy 71.17% || lr 0.001
+Epoch[7/50](100/236) || training loss 0.7559 || training accuracy 73.91% || lr 0.001
+Epoch[7/50](120/236) || training loss 0.7685 || training accuracy 74.61% || lr 0.001
+Epoch[7/50](140/236) || training loss 0.7905 || training accuracy 73.36% || lr 0.001
+Epoch[7/50](160/236) || training loss 0.8636 || training accuracy 71.25% || lr 0.001
+Epoch[7/50](180/236) || training loss 0.8364 || training accuracy 71.88% || lr 0.001
+Epoch[7/50](200/236) || training loss 0.7752 || training accuracy 72.73% || lr 0.001
+Epoch[7/50](220/236) || training loss 0.7948 || training accuracy 71.64% || lr 0.001
+Calculating validation results...
+[Val] acc : 54.66%, loss: 0.95 || best acc : 54.79%, best loss: 0.93
+Epoch[8/50](20/236) || training loss 0.7495 || training accuracy 74.30% || lr 0.001
+Epoch[8/50](40/236) || training loss 0.7397 || training accuracy 73.44% || lr 0.001
+Epoch[8/50](60/236) || training loss 0.7791 || training accuracy 72.89% || lr 0.001
+Epoch[8/50](80/236) || training loss 0.793 || training accuracy 73.28% || lr 0.001
+Epoch[8/50](100/236) || training loss 0.7888 || training accuracy 71.80% || lr 0.001
+Epoch[8/50](120/236) || training loss 0.8297 || training accuracy 71.64% || lr 0.001
+Epoch[8/50](140/236) || training loss 0.781 || training accuracy 72.42% || lr 0.001
+Epoch[8/50](160/236) || training loss 0.8082 || training accuracy 72.34% || lr 0.001
+Epoch[8/50](180/236) || training loss 0.7952 || training accuracy 73.67% || lr 0.001
+Epoch[8/50](200/236) || training loss 0.7923 || training accuracy 72.73% || lr 0.001
+Epoch[8/50](220/236) || training loss 0.7697 || training accuracy 73.67% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 55.48%! saving the best model..
+[Val] acc : 55.48%, loss: 0.92 || best acc : 55.48%, best loss: 0.92
+Epoch[9/50](20/236) || training loss 0.6945 || training accuracy 76.48% || lr 0.001
+Epoch[9/50](40/236) || training loss 0.735 || training accuracy 74.53% || lr 0.001
+Epoch[9/50](60/236) || training loss 0.754 || training accuracy 73.83% || lr 0.001
+Epoch[9/50](80/236) || training loss 0.7451 || training accuracy 73.75% || lr 0.001
+Epoch[9/50](100/236) || training loss 0.7746 || training accuracy 73.44% || lr 0.001
+Epoch[9/50](120/236) || training loss 0.8097 || training accuracy 71.64% || lr 0.001
+Epoch[9/50](140/236) || training loss 0.7594 || training accuracy 72.81% || lr 0.001
+Epoch[9/50](160/236) || training loss 0.816 || training accuracy 72.50% || lr 0.001
+Epoch[9/50](180/236) || training loss 0.7824 || training accuracy 74.69% || lr 0.001
+Epoch[9/50](200/236) || training loss 0.7887 || training accuracy 72.42% || lr 0.001
+Epoch[9/50](220/236) || training loss 0.7985 || training accuracy 73.36% || lr 0.001
+Calculating validation results...
+[Val] acc : 55.05%, loss: 0.93 || best acc : 55.48%, best loss: 0.92
+Epoch[10/50](20/236) || training loss 0.7406 || training accuracy 73.75% || lr 0.001
+Epoch[10/50](40/236) || training loss 0.8151 || training accuracy 72.19% || lr 0.001
+Epoch[10/50](60/236) || training loss 0.7465 || training accuracy 73.75% || lr 0.001
+Epoch[10/50](80/236) || training loss  0.8 || training accuracy 72.34% || lr 0.001
+Epoch[10/50](100/236) || training loss 0.7266 || training accuracy 73.44% || lr 0.001
+Epoch[10/50](120/236) || training loss 0.78 || training accuracy 73.75% || lr 0.001
+Epoch[10/50](140/236) || training loss 0.7693 || training accuracy 74.61% || lr 0.001
+Epoch[10/50](160/236) || training loss 0.7311 || training accuracy 74.53% || lr 0.001
+Epoch[10/50](180/236) || training loss 0.7986 || training accuracy 72.11% || lr 0.001
+Epoch[10/50](200/236) || training loss 0.7402 || training accuracy 75.08% || lr 0.001
+Epoch[10/50](220/236) || training loss 0.7664 || training accuracy 74.06% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 55.93%! saving the best model..
+[Val] acc : 55.93%, loss: 0.91 || best acc : 55.93%, best loss: 0.91
+Epoch[11/50](20/236) || training loss 0.7024 || training accuracy 75.47% || lr 0.001
+Epoch[11/50](40/236) || training loss 0.7441 || training accuracy 73.28% || lr 0.001
+Epoch[11/50](60/236) || training loss 0.7526 || training accuracy 74.38% || lr 0.001
+Epoch[11/50](80/236) || training loss 0.7606 || training accuracy 74.38% || lr 0.001
+Epoch[11/50](100/236) || training loss 0.7594 || training accuracy 73.20% || lr 0.001
+Epoch[11/50](120/236) || training loss 0.7112 || training accuracy 75.70% || lr 0.001
+Epoch[11/50](140/236) || training loss 0.7643 || training accuracy 73.83% || lr 0.001
+Epoch[11/50](160/236) || training loss 0.7325 || training accuracy 73.59% || lr 0.001
+Epoch[11/50](180/236) || training loss 0.7716 || training accuracy 73.83% || lr 0.001
+Epoch[11/50](200/236) || training loss 0.7983 || training accuracy 72.89% || lr 0.001
+Epoch[11/50](220/236) || training loss 0.736 || training accuracy 74.38% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 55.95%! saving the best model..
+[Val] acc : 55.95%, loss: 0.92 || best acc : 55.95%, best loss: 0.91
+Epoch[12/50](20/236) || training loss 0.7145 || training accuracy 75.31% || lr 0.001
+Epoch[12/50](40/236) || training loss 0.7194 || training accuracy 75.86% || lr 0.001
+Epoch[12/50](60/236) || training loss 0.7493 || training accuracy 75.70% || lr 0.001
+Epoch[12/50](80/236) || training loss 0.7546 || training accuracy 74.14% || lr 0.001
+Epoch[12/50](100/236) || training loss 0.7748 || training accuracy 72.19% || lr 0.001
+Epoch[12/50](120/236) || training loss 0.7332 || training accuracy 75.94% || lr 0.001
+Epoch[12/50](140/236) || training loss 0.748 || training accuracy 74.06% || lr 0.001
+Epoch[12/50](160/236) || training loss 0.7465 || training accuracy 73.52% || lr 0.001
+Epoch[12/50](180/236) || training loss 0.7167 || training accuracy 74.06% || lr 0.001
+Epoch[12/50](200/236) || training loss 0.8327 || training accuracy 69.61% || lr 0.001
+Epoch[12/50](220/236) || training loss 0.776 || training accuracy 73.59% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 56.24%! saving the best model..
+[Val] acc : 56.24%, loss: 0.91 || best acc : 56.24%, best loss: 0.91
+Epoch[13/50](20/236) || training loss 0.6867 || training accuracy 76.80% || lr 0.001
+Epoch[13/50](40/236) || training loss 0.7142 || training accuracy 76.02% || lr 0.001
+Epoch[13/50](60/236) || training loss 0.7259 || training accuracy 74.84% || lr 0.001
+Epoch[13/50](80/236) || training loss 0.7707 || training accuracy 72.89% || lr 0.001
+Epoch[13/50](100/236) || training loss 0.7352 || training accuracy 75.23% || lr 0.001
+Epoch[13/50](120/236) || training loss 0.742 || training accuracy 74.45% || lr 0.001
+Epoch[13/50](140/236) || training loss 0.7158 || training accuracy 74.06% || lr 0.001
+Epoch[13/50](160/236) || training loss 0.7188 || training accuracy 74.69% || lr 0.001
+Epoch[13/50](180/236) || training loss 0.7903 || training accuracy 73.44% || lr 0.001
+Epoch[13/50](200/236) || training loss 0.7444 || training accuracy 75.00% || lr 0.001
+Epoch[13/50](220/236) || training loss 0.7429 || training accuracy 74.69% || lr 0.001
+Calculating validation results...
+[Val] acc : 55.26%, loss: 0.92 || best acc : 56.24%, best loss: 0.91
+Epoch[14/50](20/236) || training loss 0.7444 || training accuracy 75.00% || lr 0.001
+Epoch[14/50](40/236) || training loss 0.7452 || training accuracy 75.00% || lr 0.001
+Epoch[14/50](60/236) || training loss 0.7202 || training accuracy 74.45% || lr 0.001
+Epoch[14/50](80/236) || training loss 0.7034 || training accuracy 75.16% || lr 0.001
+Epoch[14/50](100/236) || training loss 0.806 || training accuracy 72.27% || lr 0.001
+Epoch[14/50](120/236) || training loss 0.761 || training accuracy 73.44% || lr 0.001
+Epoch[14/50](140/236) || training loss 0.7164 || training accuracy 75.47% || lr 0.001
+Epoch[14/50](160/236) || training loss 0.736 || training accuracy 74.30% || lr 0.001
+Epoch[14/50](180/236) || training loss 0.7734 || training accuracy 70.78% || lr 0.001
+Epoch[14/50](200/236) || training loss 0.6445 || training accuracy 77.66% || lr 0.001
+Epoch[14/50](220/236) || training loss 0.6905 || training accuracy 77.03% || lr 0.001
+Calculating validation results...
+[Val] acc : 56.08%, loss: 0.91 || best acc : 56.24%, best loss: 0.91
+Epoch[15/50](20/236) || training loss 0.6663 || training accuracy 76.80% || lr 0.001
+Epoch[15/50](40/236) || training loss 0.6869 || training accuracy 77.42% || lr 0.001
+Epoch[15/50](60/236) || training loss 0.7488 || training accuracy 74.38% || lr 0.001
+Epoch[15/50](80/236) || training loss 0.7062 || training accuracy 75.39% || lr 0.001
+Epoch[15/50](100/236) || training loss 0.7497 || training accuracy 73.52% || lr 0.001
+Epoch[15/50](120/236) || training loss 0.7511 || training accuracy 73.98% || lr 0.001
+Epoch[15/50](140/236) || training loss 0.7709 || training accuracy 74.61% || lr 0.001
+Epoch[15/50](160/236) || training loss 0.7201 || training accuracy 75.16% || lr 0.001
+Epoch[15/50](180/236) || training loss 0.7525 || training accuracy 72.03% || lr 0.001
+Epoch[15/50](200/236) || training loss 0.7084 || training accuracy 74.53% || lr 0.001
+Epoch[15/50](220/236) || training loss 0.7588 || training accuracy 72.81% || lr 0.001
+Calculating validation results...
+New best model for val accuracy : 56.77%! saving the best model..
+[Val] acc : 56.77%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[16/50](20/236) || training loss 0.7313 || training accuracy 74.84% || lr 0.001
+Epoch[16/50](40/236) || training loss 0.7258 || training accuracy 75.16% || lr 0.001
+Epoch[16/50](60/236) || training loss 0.7115 || training accuracy 74.30% || lr 0.001
+Epoch[16/50](80/236) || training loss 0.7314 || training accuracy 74.69% || lr 0.001
+Epoch[16/50](100/236) || training loss 0.6895 || training accuracy 76.17% || lr 0.001
+Epoch[16/50](120/236) || training loss 0.741 || training accuracy 73.91% || lr 0.001
+Epoch[16/50](140/236) || training loss 0.7039 || training accuracy 75.47% || lr 0.001
+Epoch[16/50](160/236) || training loss 0.6943 || training accuracy 76.88% || lr 0.001
+Epoch[16/50](180/236) || training loss 0.6934 || training accuracy 75.70% || lr 0.001
+Epoch[16/50](200/236) || training loss 0.6954 || training accuracy 75.39% || lr 0.001
+Epoch[16/50](220/236) || training loss 0.7184 || training accuracy 75.62% || lr 0.001
+Calculating validation results...
+[Val] acc : 55.00%, loss: 0.93 || best acc : 56.77%, best loss: 0.89
+Epoch[17/50](20/236) || training loss 0.6916 || training accuracy 75.86% || lr 0.001
+Epoch[17/50](40/236) || training loss 0.7462 || training accuracy 74.38% || lr 0.001
+Epoch[17/50](60/236) || training loss 0.6715 || training accuracy 76.25% || lr 0.001
+Epoch[17/50](80/236) || training loss 0.7037 || training accuracy 76.17% || lr 0.001
+Epoch[17/50](100/236) || training loss 0.7142 || training accuracy 74.06% || lr 0.001
+Epoch[17/50](120/236) || training loss 0.7333 || training accuracy 74.06% || lr 0.001
+Epoch[17/50](140/236) || training loss 0.7195 || training accuracy 74.30% || lr 0.001
+Epoch[17/50](160/236) || training loss 0.7412 || training accuracy 73.59% || lr 0.001
+Epoch[17/50](180/236) || training loss 0.6914 || training accuracy 76.02% || lr 0.001
+Epoch[17/50](200/236) || training loss 0.6959 || training accuracy 75.94% || lr 0.001
+Epoch[17/50](220/236) || training loss 0.7414 || training accuracy 74.14% || lr 0.001
+Calculating validation results...
+[Val] acc : 54.89%, loss: 0.94 || best acc : 56.77%, best loss: 0.89
+Epoch[18/50](20/236) || training loss 0.73 || training accuracy 74.38% || lr 0.001
+Epoch[18/50](40/236) || training loss 0.6747 || training accuracy 77.03% || lr 0.001
+Epoch[18/50](60/236) || training loss 0.6982 || training accuracy 75.86% || lr 0.001
+Epoch[18/50](80/236) || training loss 0.7263 || training accuracy 75.16% || lr 0.001
+Epoch[18/50](100/236) || training loss 0.6944 || training accuracy 75.55% || lr 0.001
+Epoch[18/50](120/236) || training loss  0.7 || training accuracy 76.02% || lr 0.001
+Epoch[18/50](140/236) || training loss 0.7295 || training accuracy 74.69% || lr 0.001
+Epoch[18/50](160/236) || training loss 0.7164 || training accuracy 74.77% || lr 0.001
+Epoch[18/50](180/236) || training loss 0.692 || training accuracy 76.09% || lr 0.001
+Epoch[18/50](200/236) || training loss 0.728 || training accuracy 75.94% || lr 0.001
+Epoch[18/50](220/236) || training loss 0.7383 || training accuracy 73.91% || lr 0.001
+Calculating validation results...
+[Val] acc : 55.82%, loss: 0.92 || best acc : 56.77%, best loss: 0.89
+Epoch[19/50](20/236) || training loss 0.6798 || training accuracy 76.56% || lr 0.001
+Epoch[19/50](40/236) || training loss 0.6979 || training accuracy 76.02% || lr 0.001
+Epoch[19/50](60/236) || training loss 0.7258 || training accuracy 76.02% || lr 0.001
+Epoch[19/50](80/236) || training loss 0.6831 || training accuracy 76.48% || lr 0.001
+Epoch[19/50](100/236) || training loss 0.6998 || training accuracy 74.84% || lr 0.001
+Epoch[19/50](120/236) || training loss 0.7315 || training accuracy 76.33% || lr 0.001
+Epoch[19/50](140/236) || training loss 0.6848 || training accuracy 75.70% || lr 0.001
+Epoch[19/50](160/236) || training loss 0.6883 || training accuracy 76.09% || lr 0.001
+Epoch[19/50](180/236) || training loss 0.7263 || training accuracy 73.91% || lr 0.001
+Epoch[19/50](200/236) || training loss 0.6997 || training accuracy 75.39% || lr 0.001
+Epoch[19/50](220/236) || training loss 0.7115 || training accuracy 74.06% || lr 0.001
+Calculating validation results...
+[Val] acc : 55.82%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[20/50](20/236) || training loss 0.6726 || training accuracy 75.70% || lr 0.0005
+Epoch[20/50](40/236) || training loss 0.6893 || training accuracy 77.73% || lr 0.0005
+Epoch[20/50](60/236) || training loss 0.7013 || training accuracy 74.38% || lr 0.0005
+Epoch[20/50](80/236) || training loss 0.7007 || training accuracy 76.56% || lr 0.0005
+Epoch[20/50](100/236) || training loss 0.6508 || training accuracy 78.12% || lr 0.0005
+Epoch[20/50](120/236) || training loss 0.648 || training accuracy 76.48% || lr 0.0005
+Epoch[20/50](140/236) || training loss 0.6452 || training accuracy 77.34% || lr 0.0005
+Epoch[20/50](160/236) || training loss 0.6505 || training accuracy 77.50% || lr 0.0005
+Epoch[20/50](180/236) || training loss 0.6803 || training accuracy 75.78% || lr 0.0005
+Epoch[20/50](200/236) || training loss 0.7217 || training accuracy 75.00% || lr 0.0005
+Epoch[20/50](220/236) || training loss 0.6879 || training accuracy 74.84% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.32%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[21/50](20/236) || training loss 0.631 || training accuracy 77.50% || lr 0.0005
+Epoch[21/50](40/236) || training loss 0.6477 || training accuracy 77.97% || lr 0.0005
+Epoch[21/50](60/236) || training loss 0.6518 || training accuracy 77.50% || lr 0.0005
+Epoch[21/50](80/236) || training loss 0.6257 || training accuracy 79.45% || lr 0.0005
+Epoch[21/50](100/236) || training loss 0.6891 || training accuracy 76.02% || lr 0.0005
+Epoch[21/50](120/236) || training loss 0.717 || training accuracy 75.94% || lr 0.0005
+Epoch[21/50](140/236) || training loss 0.665 || training accuracy 75.62% || lr 0.0005
+Epoch[21/50](160/236) || training loss 0.6327 || training accuracy 78.59% || lr 0.0005
+Epoch[21/50](180/236) || training loss 0.6834 || training accuracy 76.41% || lr 0.0005
+Epoch[21/50](200/236) || training loss 0.7126 || training accuracy 74.45% || lr 0.0005
+Epoch[21/50](220/236) || training loss 0.6963 || training accuracy 76.02% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.22%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[22/50](20/236) || training loss 0.6776 || training accuracy 75.86% || lr 0.0005
+Epoch[22/50](40/236) || training loss 0.6104 || training accuracy 79.92% || lr 0.0005
+Epoch[22/50](60/236) || training loss 0.636 || training accuracy 79.77% || lr 0.0005
+Epoch[22/50](80/236) || training loss 0.6577 || training accuracy 76.80% || lr 0.0005
+Epoch[22/50](100/236) || training loss 0.6326 || training accuracy 78.28% || lr 0.0005
+Epoch[22/50](120/236) || training loss 0.6689 || training accuracy 76.64% || lr 0.0005
+Epoch[22/50](140/236) || training loss 0.6393 || training accuracy 78.05% || lr 0.0005
+Epoch[22/50](160/236) || training loss 0.6469 || training accuracy 78.12% || lr 0.0005
+Epoch[22/50](180/236) || training loss 0.6669 || training accuracy 77.50% || lr 0.0005
+Epoch[22/50](200/236) || training loss 0.6861 || training accuracy 74.53% || lr 0.0005
+Epoch[22/50](220/236) || training loss 0.7392 || training accuracy 73.20% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.14%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[23/50](20/236) || training loss 0.6361 || training accuracy 79.06% || lr 0.0005
+Epoch[23/50](40/236) || training loss 0.6486 || training accuracy 77.97% || lr 0.0005
+Epoch[23/50](60/236) || training loss 0.6694 || training accuracy 75.94% || lr 0.0005
+Epoch[23/50](80/236) || training loss 0.7235 || training accuracy 75.31% || lr 0.0005
+Epoch[23/50](100/236) || training loss 0.6994 || training accuracy 75.23% || lr 0.0005
+Epoch[23/50](120/236) || training loss 0.6167 || training accuracy 78.91% || lr 0.0005
+Epoch[23/50](140/236) || training loss 0.6871 || training accuracy 76.09% || lr 0.0005
+Epoch[23/50](160/236) || training loss 0.6808 || training accuracy 76.02% || lr 0.0005
+Epoch[23/50](180/236) || training loss 0.6688 || training accuracy 76.17% || lr 0.0005
+Epoch[23/50](200/236) || training loss 0.6066 || training accuracy 78.67% || lr 0.0005
+Epoch[23/50](220/236) || training loss 0.6696 || training accuracy 76.80% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.56%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[24/50](20/236) || training loss 0.6507 || training accuracy 76.95% || lr 0.0005
+Epoch[24/50](40/236) || training loss 0.7061 || training accuracy 77.03% || lr 0.0005
+Epoch[24/50](60/236) || training loss 0.6313 || training accuracy 79.22% || lr 0.0005
+Epoch[24/50](80/236) || training loss 0.6751 || training accuracy 76.72% || lr 0.0005
+Epoch[24/50](100/236) || training loss 0.6809 || training accuracy 77.03% || lr 0.0005
+Epoch[24/50](120/236) || training loss 0.6744 || training accuracy 76.33% || lr 0.0005
+Epoch[24/50](140/236) || training loss 0.6391 || training accuracy 77.50% || lr 0.0005
+Epoch[24/50](160/236) || training loss 0.6351 || training accuracy 77.73% || lr 0.0005
+Epoch[24/50](180/236) || training loss 0.6845 || training accuracy 76.64% || lr 0.0005
+Epoch[24/50](200/236) || training loss 0.7103 || training accuracy 74.45% || lr 0.0005
+Epoch[24/50](220/236) || training loss 0.6263 || training accuracy 78.91% || lr 0.0005
+Calculating validation results...
+[Val] acc : 55.85%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[25/50](20/236) || training loss 0.6496 || training accuracy 77.66% || lr 0.0005
+Epoch[25/50](40/236) || training loss 0.6455 || training accuracy 77.66% || lr 0.0005
+Epoch[25/50](60/236) || training loss 0.6759 || training accuracy 76.64% || lr 0.0005
+Epoch[25/50](80/236) || training loss 0.6524 || training accuracy 77.11% || lr 0.0005
+Epoch[25/50](100/236) || training loss 0.6691 || training accuracy 77.58% || lr 0.0005
+Epoch[25/50](120/236) || training loss 0.6626 || training accuracy 78.36% || lr 0.0005
+Epoch[25/50](140/236) || training loss 0.6747 || training accuracy 76.17% || lr 0.0005
+Epoch[25/50](160/236) || training loss 0.652 || training accuracy 78.44% || lr 0.0005
+Epoch[25/50](180/236) || training loss 0.6851 || training accuracy 75.70% || lr 0.0005
+Epoch[25/50](200/236) || training loss 0.6641 || training accuracy 78.05% || lr 0.0005
+Epoch[25/50](220/236) || training loss 0.7104 || training accuracy 76.17% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.01%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[26/50](20/236) || training loss 0.6448 || training accuracy 76.64% || lr 0.0005
+Epoch[26/50](40/236) || training loss 0.6573 || training accuracy 76.88% || lr 0.0005
+Epoch[26/50](60/236) || training loss 0.6551 || training accuracy 78.44% || lr 0.0005
+Epoch[26/50](80/236) || training loss 0.6796 || training accuracy 77.03% || lr 0.0005
+Epoch[26/50](100/236) || training loss 0.6763 || training accuracy 76.33% || lr 0.0005
+Epoch[26/50](120/236) || training loss 0.6228 || training accuracy 78.28% || lr 0.0005
+Epoch[26/50](140/236) || training loss 0.6985 || training accuracy 74.45% || lr 0.0005
+Epoch[26/50](160/236) || training loss 0.6716 || training accuracy 77.11% || lr 0.0005
+Epoch[26/50](180/236) || training loss 0.6842 || training accuracy 78.05% || lr 0.0005
+Epoch[26/50](200/236) || training loss 0.6306 || training accuracy 78.36% || lr 0.0005
+Epoch[26/50](220/236) || training loss 0.6482 || training accuracy 77.58% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.24%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[27/50](20/236) || training loss 0.6442 || training accuracy 77.42% || lr 0.0005
+Epoch[27/50](40/236) || training loss 0.7153 || training accuracy 75.94% || lr 0.0005
+Epoch[27/50](60/236) || training loss 0.6425 || training accuracy 76.72% || lr 0.0005
+Epoch[27/50](80/236) || training loss 0.6038 || training accuracy 80.70% || lr 0.0005
+Epoch[27/50](100/236) || training loss 0.6795 || training accuracy 76.95% || lr 0.0005
+Epoch[27/50](120/236) || training loss 0.6224 || training accuracy 77.50% || lr 0.0005
+Epoch[27/50](140/236) || training loss 0.6353 || training accuracy 78.75% || lr 0.0005
+Epoch[27/50](160/236) || training loss 0.6892 || training accuracy 76.09% || lr 0.0005
+Epoch[27/50](180/236) || training loss 0.6835 || training accuracy 75.94% || lr 0.0005
+Epoch[27/50](200/236) || training loss 0.6734 || training accuracy 76.72% || lr 0.0005
+Epoch[27/50](220/236) || training loss 0.6613 || training accuracy 77.34% || lr 0.0005
+Calculating validation results...
+[Val] acc : 55.98%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[28/50](20/236) || training loss 0.612 || training accuracy 78.67% || lr 0.0005
+Epoch[28/50](40/236) || training loss 0.6452 || training accuracy 77.34% || lr 0.0005
+Epoch[28/50](60/236) || training loss 0.6449 || training accuracy 77.73% || lr 0.0005
+Epoch[28/50](80/236) || training loss 0.6456 || training accuracy 77.42% || lr 0.0005
+Epoch[28/50](100/236) || training loss 0.6572 || training accuracy 76.41% || lr 0.0005
+Epoch[28/50](120/236) || training loss 0.6722 || training accuracy 77.03% || lr 0.0005
+Epoch[28/50](140/236) || training loss 0.6666 || training accuracy 76.80% || lr 0.0005
+Epoch[28/50](160/236) || training loss 0.6931 || training accuracy 76.02% || lr 0.0005
+Epoch[28/50](180/236) || training loss 0.6768 || training accuracy 77.42% || lr 0.0005
+Epoch[28/50](200/236) || training loss 0.6861 || training accuracy 76.33% || lr 0.0005
+Epoch[28/50](220/236) || training loss 0.6415 || training accuracy 77.42% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.01%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[29/50](20/236) || training loss 0.6445 || training accuracy 78.12% || lr 0.0005
+Epoch[29/50](40/236) || training loss 0.6547 || training accuracy 77.50% || lr 0.0005
+Epoch[29/50](60/236) || training loss 0.658 || training accuracy 78.05% || lr 0.0005
+Epoch[29/50](80/236) || training loss 0.6557 || training accuracy 76.88% || lr 0.0005
+Epoch[29/50](100/236) || training loss 0.6737 || training accuracy 76.17% || lr 0.0005
+Epoch[29/50](120/236) || training loss 0.663 || training accuracy 77.19% || lr 0.0005
+Epoch[29/50](140/236) || training loss 0.6534 || training accuracy 76.72% || lr 0.0005
+Epoch[29/50](160/236) || training loss 0.7053 || training accuracy 75.39% || lr 0.0005
+Epoch[29/50](180/236) || training loss 0.624 || training accuracy 78.67% || lr 0.0005
+Epoch[29/50](200/236) || training loss 0.6916 || training accuracy 76.72% || lr 0.0005
+Epoch[29/50](220/236) || training loss 0.675 || training accuracy 75.39% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.14%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[30/50](20/236) || training loss 0.6629 || training accuracy 77.27% || lr 0.0005
+Epoch[30/50](40/236) || training loss 0.6018 || training accuracy 80.31% || lr 0.0005
+Epoch[30/50](60/236) || training loss 0.644 || training accuracy 78.28% || lr 0.0005
+Epoch[30/50](80/236) || training loss 0.6711 || training accuracy 77.58% || lr 0.0005
+Epoch[30/50](100/236) || training loss 0.6414 || training accuracy 77.89% || lr 0.0005
+Epoch[30/50](120/236) || training loss 0.6745 || training accuracy 75.86% || lr 0.0005
+Epoch[30/50](140/236) || training loss 0.6422 || training accuracy 77.50% || lr 0.0005
+Epoch[30/50](160/236) || training loss 0.6985 || training accuracy 75.55% || lr 0.0005
+Epoch[30/50](180/236) || training loss 0.6265 || training accuracy 78.05% || lr 0.0005
+Epoch[30/50](200/236) || training loss 0.6383 || training accuracy 77.73% || lr 0.0005
+Epoch[30/50](220/236) || training loss 0.6917 || training accuracy 76.25% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.53%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[31/50](20/236) || training loss 0.6181 || training accuracy 77.89% || lr 0.0005
+Epoch[31/50](40/236) || training loss 0.6064 || training accuracy 78.36% || lr 0.0005
+Epoch[31/50](60/236) || training loss 0.6788 || training accuracy 76.88% || lr 0.0005
+Epoch[31/50](80/236) || training loss 0.6441 || training accuracy 77.89% || lr 0.0005
+Epoch[31/50](100/236) || training loss 0.6584 || training accuracy 77.27% || lr 0.0005
+Epoch[31/50](120/236) || training loss 0.6587 || training accuracy 76.56% || lr 0.0005
+Epoch[31/50](140/236) || training loss 0.6893 || training accuracy 76.02% || lr 0.0005
+Epoch[31/50](160/236) || training loss 0.6677 || training accuracy 77.03% || lr 0.0005
+Epoch[31/50](180/236) || training loss 0.6595 || training accuracy 77.89% || lr 0.0005
+Epoch[31/50](200/236) || training loss 0.6871 || training accuracy 77.34% || lr 0.0005
+Epoch[31/50](220/236) || training loss 0.6539 || training accuracy 75.86% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.19%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[32/50](20/236) || training loss 0.6107 || training accuracy 78.44% || lr 0.0005
+Epoch[32/50](40/236) || training loss 0.6897 || training accuracy 76.09% || lr 0.0005
+Epoch[32/50](60/236) || training loss 0.6511 || training accuracy 78.12% || lr 0.0005
+Epoch[32/50](80/236) || training loss 0.6855 || training accuracy 76.33% || lr 0.0005
+Epoch[32/50](100/236) || training loss 0.6376 || training accuracy 77.58% || lr 0.0005
+Epoch[32/50](120/236) || training loss 0.6521 || training accuracy 76.88% || lr 0.0005
+Epoch[32/50](140/236) || training loss 0.6428 || training accuracy 77.11% || lr 0.0005
+Epoch[32/50](160/236) || training loss 0.6674 || training accuracy 75.39% || lr 0.0005
+Epoch[32/50](180/236) || training loss 0.6563 || training accuracy 77.66% || lr 0.0005
+Epoch[32/50](200/236) || training loss 0.6415 || training accuracy 77.50% || lr 0.0005
+Epoch[32/50](220/236) || training loss 0.7003 || training accuracy 77.03% || lr 0.0005
+Calculating validation results...
+[Val] acc : 55.90%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[33/50](20/236) || training loss 0.6196 || training accuracy 79.14% || lr 0.0005
+Epoch[33/50](40/236) || training loss 0.6419 || training accuracy 78.28% || lr 0.0005
+Epoch[33/50](60/236) || training loss 0.6397 || training accuracy 77.19% || lr 0.0005
+Epoch[33/50](80/236) || training loss 0.6611 || training accuracy 77.42% || lr 0.0005
+Epoch[33/50](100/236) || training loss 0.6528 || training accuracy 76.25% || lr 0.0005
+Epoch[33/50](120/236) || training loss 0.6127 || training accuracy 80.16% || lr 0.0005
+Epoch[33/50](140/236) || training loss 0.6651 || training accuracy 76.88% || lr 0.0005
+Epoch[33/50](160/236) || training loss 0.6866 || training accuracy 76.25% || lr 0.0005
+Epoch[33/50](180/236) || training loss 0.6584 || training accuracy 76.09% || lr 0.0005
+Epoch[33/50](200/236) || training loss 0.6881 || training accuracy 74.92% || lr 0.0005
+Epoch[33/50](220/236) || training loss 0.6492 || training accuracy 76.56% || lr 0.0005
+Calculating validation results...
+[Val] acc : 55.87%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[34/50](20/236) || training loss 0.6674 || training accuracy 76.09% || lr 0.0005
+Epoch[34/50](40/236) || training loss 0.6062 || training accuracy 80.23% || lr 0.0005
+Epoch[34/50](60/236) || training loss 0.6642 || training accuracy 77.66% || lr 0.0005
+Epoch[34/50](80/236) || training loss 0.6438 || training accuracy 76.72% || lr 0.0005
+Epoch[34/50](100/236) || training loss 0.6191 || training accuracy 77.66% || lr 0.0005
+Epoch[34/50](120/236) || training loss 0.6472 || training accuracy 76.56% || lr 0.0005
+Epoch[34/50](140/236) || training loss 0.6647 || training accuracy 77.27% || lr 0.0005
+Epoch[34/50](160/236) || training loss 0.6822 || training accuracy 77.03% || lr 0.0005
+Epoch[34/50](180/236) || training loss 0.6638 || training accuracy 77.19% || lr 0.0005
+Epoch[34/50](200/236) || training loss 0.6492 || training accuracy 75.86% || lr 0.0005
+Epoch[34/50](220/236) || training loss 0.6584 || training accuracy 78.05% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.30%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[35/50](20/236) || training loss 0.6563 || training accuracy 77.81% || lr 0.0005
+Epoch[35/50](40/236) || training loss 0.6776 || training accuracy 76.72% || lr 0.0005
+Epoch[35/50](60/236) || training loss 0.6229 || training accuracy 78.52% || lr 0.0005
+Epoch[35/50](80/236) || training loss 0.6184 || training accuracy 78.20% || lr 0.0005
+Epoch[35/50](100/236) || training loss 0.6228 || training accuracy 78.12% || lr 0.0005
+Epoch[35/50](120/236) || training loss 0.6749 || training accuracy 76.48% || lr 0.0005
+Epoch[35/50](140/236) || training loss 0.6973 || training accuracy 76.09% || lr 0.0005
+Epoch[35/50](160/236) || training loss 0.6824 || training accuracy 76.09% || lr 0.0005
+Epoch[35/50](180/236) || training loss 0.6346 || training accuracy 77.66% || lr 0.0005
+Epoch[35/50](200/236) || training loss 0.6555 || training accuracy 76.56% || lr 0.0005
+Epoch[35/50](220/236) || training loss 0.658 || training accuracy 75.62% || lr 0.0005
+Calculating validation results...
+[Val] acc : 55.24%, loss: 0.91 || best acc : 56.77%, best loss: 0.89
+Epoch[36/50](20/236) || training loss 0.6803 || training accuracy 77.50% || lr 0.0005
+Epoch[36/50](40/236) || training loss 0.6505 || training accuracy 77.50% || lr 0.0005
+Epoch[36/50](60/236) || training loss 0.6181 || training accuracy 78.75% || lr 0.0005
+Epoch[36/50](80/236) || training loss 0.6432 || training accuracy 78.12% || lr 0.0005
+Epoch[36/50](100/236) || training loss 0.6559 || training accuracy 76.95% || lr 0.0005
+Epoch[36/50](120/236) || training loss 0.6083 || training accuracy 79.38% || lr 0.0005
+Epoch[36/50](140/236) || training loss 0.6469 || training accuracy 77.42% || lr 0.0005
+Epoch[36/50](160/236) || training loss 0.6087 || training accuracy 78.75% || lr 0.0005
+Epoch[36/50](180/236) || training loss 0.6548 || training accuracy 77.34% || lr 0.0005
+Epoch[36/50](200/236) || training loss 0.6377 || training accuracy 77.66% || lr 0.0005
+Epoch[36/50](220/236) || training loss 0.6541 || training accuracy 77.50% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.06%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[37/50](20/236) || training loss 0.6999 || training accuracy 76.25% || lr 0.0005
+Epoch[37/50](40/236) || training loss 0.6754 || training accuracy 75.00% || lr 0.0005
+Epoch[37/50](60/236) || training loss 0.6316 || training accuracy 77.81% || lr 0.0005
+Epoch[37/50](80/236) || training loss 0.6236 || training accuracy 77.50% || lr 0.0005
+Epoch[37/50](100/236) || training loss 0.6155 || training accuracy 78.44% || lr 0.0005
+Epoch[37/50](120/236) || training loss 0.6513 || training accuracy 76.56% || lr 0.0005
+Epoch[37/50](140/236) || training loss 0.6128 || training accuracy 78.67% || lr 0.0005
+Epoch[37/50](160/236) || training loss 0.6301 || training accuracy 77.50% || lr 0.0005
+Epoch[37/50](180/236) || training loss 0.704 || training accuracy 75.55% || lr 0.0005
+Epoch[37/50](200/236) || training loss 0.6941 || training accuracy 75.78% || lr 0.0005
+Epoch[37/50](220/236) || training loss 0.631 || training accuracy 77.19% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.16%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[38/50](20/236) || training loss 0.6457 || training accuracy 76.95% || lr 0.0005
+Epoch[38/50](40/236) || training loss 0.6474 || training accuracy 77.50% || lr 0.0005
+Epoch[38/50](60/236) || training loss 0.6019 || training accuracy 78.05% || lr 0.0005
+Epoch[38/50](80/236) || training loss 0.6504 || training accuracy 76.17% || lr 0.0005
+Epoch[38/50](100/236) || training loss 0.6126 || training accuracy 78.36% || lr 0.0005
+Epoch[38/50](120/236) || training loss 0.5868 || training accuracy 80.39% || lr 0.0005
+Epoch[38/50](140/236) || training loss 0.6606 || training accuracy 76.33% || lr 0.0005
+Epoch[38/50](160/236) || training loss 0.6555 || training accuracy 76.09% || lr 0.0005
+Epoch[38/50](180/236) || training loss 0.6688 || training accuracy 76.80% || lr 0.0005
+Epoch[38/50](200/236) || training loss 0.6844 || training accuracy 77.03% || lr 0.0005
+Epoch[38/50](220/236) || training loss 0.685 || training accuracy 75.39% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.27%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[39/50](20/236) || training loss 0.6182 || training accuracy 79.84% || lr 0.0005
+Epoch[39/50](40/236) || training loss 0.6585 || training accuracy 78.98% || lr 0.0005
+Epoch[39/50](60/236) || training loss 0.6804 || training accuracy 75.94% || lr 0.0005
+Epoch[39/50](80/236) || training loss 0.6267 || training accuracy 78.83% || lr 0.0005
+Epoch[39/50](100/236) || training loss 0.6157 || training accuracy 76.95% || lr 0.0005
+Epoch[39/50](120/236) || training loss 0.6485 || training accuracy 78.28% || lr 0.0005
+Epoch[39/50](140/236) || training loss 0.6517 || training accuracy 76.17% || lr 0.0005
+Epoch[39/50](160/236) || training loss 0.6206 || training accuracy 77.81% || lr 0.0005
+Epoch[39/50](180/236) || training loss 0.6485 || training accuracy 77.50% || lr 0.0005
+Epoch[39/50](200/236) || training loss 0.6381 || training accuracy 76.88% || lr 0.0005
+Epoch[39/50](220/236) || training loss 0.6688 || training accuracy 77.19% || lr 0.0005
+Calculating validation results...
+[Val] acc : 56.11%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[40/50](20/236) || training loss 0.6487 || training accuracy 76.72% || lr 0.00025
+Epoch[40/50](40/236) || training loss 0.6506 || training accuracy 78.05% || lr 0.00025
+Epoch[40/50](60/236) || training loss 0.624 || training accuracy 78.36% || lr 0.00025
+Epoch[40/50](80/236) || training loss 0.6223 || training accuracy 78.44% || lr 0.00025
+Epoch[40/50](100/236) || training loss 0.6181 || training accuracy 79.38% || lr 0.00025
+Epoch[40/50](120/236) || training loss 0.5923 || training accuracy 79.69% || lr 0.00025
+Epoch[40/50](140/236) || training loss 0.6315 || training accuracy 78.20% || lr 0.00025
+Epoch[40/50](160/236) || training loss 0.6293 || training accuracy 77.11% || lr 0.00025
+Epoch[40/50](180/236) || training loss 0.6579 || training accuracy 77.27% || lr 0.00025
+Epoch[40/50](200/236) || training loss 0.6156 || training accuracy 79.30% || lr 0.00025
+Epoch[40/50](220/236) || training loss 0.6561 || training accuracy 77.58% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.32%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[41/50](20/236) || training loss 0.6366 || training accuracy 78.36% || lr 0.00025
+Epoch[41/50](40/236) || training loss 0.6596 || training accuracy 76.64% || lr 0.00025
+Epoch[41/50](60/236) || training loss 0.6242 || training accuracy 78.67% || lr 0.00025
+Epoch[41/50](80/236) || training loss 0.6255 || training accuracy 79.69% || lr 0.00025
+Epoch[41/50](100/236) || training loss 0.578 || training accuracy 79.45% || lr 0.00025
+Epoch[41/50](120/236) || training loss 0.6214 || training accuracy 78.52% || lr 0.00025
+Epoch[41/50](140/236) || training loss 0.6486 || training accuracy 76.17% || lr 0.00025
+Epoch[41/50](160/236) || training loss 0.6492 || training accuracy 76.41% || lr 0.00025
+Epoch[41/50](180/236) || training loss 0.6422 || training accuracy 78.98% || lr 0.00025
+Epoch[41/50](200/236) || training loss 0.6228 || training accuracy 79.53% || lr 0.00025
+Epoch[41/50](220/236) || training loss 0.5995 || training accuracy 79.06% || lr 0.00025
+Calculating validation results...
+[Val] acc : 55.69%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[42/50](20/236) || training loss 0.5666 || training accuracy 81.17% || lr 0.00025
+Epoch[42/50](40/236) || training loss 0.6154 || training accuracy 78.28% || lr 0.00025
+Epoch[42/50](60/236) || training loss 0.6872 || training accuracy 76.17% || lr 0.00025
+Epoch[42/50](80/236) || training loss 0.6254 || training accuracy 78.59% || lr 0.00025
+Epoch[42/50](100/236) || training loss 0.6164 || training accuracy 78.98% || lr 0.00025
+Epoch[42/50](120/236) || training loss 0.6462 || training accuracy 77.34% || lr 0.00025
+Epoch[42/50](140/236) || training loss 0.6102 || training accuracy 78.91% || lr 0.00025
+Epoch[42/50](160/236) || training loss 0.6158 || training accuracy 79.14% || lr 0.00025
+Epoch[42/50](180/236) || training loss 0.6422 || training accuracy 77.11% || lr 0.00025
+Epoch[42/50](200/236) || training loss 0.6362 || training accuracy 77.66% || lr 0.00025
+Epoch[42/50](220/236) || training loss 0.6516 || training accuracy 77.97% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.14%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[43/50](20/236) || training loss 0.5935 || training accuracy 81.02% || lr 0.00025
+Epoch[43/50](40/236) || training loss 0.5873 || training accuracy 80.55% || lr 0.00025
+Epoch[43/50](60/236) || training loss 0.6452 || training accuracy 78.05% || lr 0.00025
+Epoch[43/50](80/236) || training loss 0.6473 || training accuracy 77.50% || lr 0.00025
+Epoch[43/50](100/236) || training loss 0.6543 || training accuracy 77.27% || lr 0.00025
+Epoch[43/50](120/236) || training loss 0.6659 || training accuracy 76.02% || lr 0.00025
+Epoch[43/50](140/236) || training loss 0.6005 || training accuracy 79.38% || lr 0.00025
+Epoch[43/50](160/236) || training loss 0.624 || training accuracy 78.98% || lr 0.00025
+Epoch[43/50](180/236) || training loss 0.6071 || training accuracy 78.12% || lr 0.00025
+Epoch[43/50](200/236) || training loss 0.6672 || training accuracy 76.80% || lr 0.00025
+Epoch[43/50](220/236) || training loss 0.6677 || training accuracy 76.17% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.19%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[44/50](20/236) || training loss 0.6227 || training accuracy 78.75% || lr 0.00025
+Epoch[44/50](40/236) || training loss 0.6388 || training accuracy 76.72% || lr 0.00025
+Epoch[44/50](60/236) || training loss 0.6407 || training accuracy 78.36% || lr 0.00025
+Epoch[44/50](80/236) || training loss 0.6366 || training accuracy 78.59% || lr 0.00025
+Epoch[44/50](100/236) || training loss 0.6048 || training accuracy 80.00% || lr 0.00025
+Epoch[44/50](120/236) || training loss 0.6076 || training accuracy 79.84% || lr 0.00025
+Epoch[44/50](140/236) || training loss 0.5995 || training accuracy 79.22% || lr 0.00025
+Epoch[44/50](160/236) || training loss 0.6169 || training accuracy 78.98% || lr 0.00025
+Epoch[44/50](180/236) || training loss 0.6229 || training accuracy 79.61% || lr 0.00025
+Epoch[44/50](200/236) || training loss 0.6623 || training accuracy 77.03% || lr 0.00025
+Epoch[44/50](220/236) || training loss 0.6643 || training accuracy 77.66% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.56%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[45/50](20/236) || training loss 0.6199 || training accuracy 79.69% || lr 0.00025
+Epoch[45/50](40/236) || training loss 0.6195 || training accuracy 77.73% || lr 0.00025
+Epoch[45/50](60/236) || training loss 0.5856 || training accuracy 80.62% || lr 0.00025
+Epoch[45/50](80/236) || training loss 0.6155 || training accuracy 78.20% || lr 0.00025
+Epoch[45/50](100/236) || training loss 0.6104 || training accuracy 78.12% || lr 0.00025
+Epoch[45/50](120/236) || training loss 0.6511 || training accuracy 78.20% || lr 0.00025
+Epoch[45/50](140/236) || training loss 0.6449 || training accuracy 78.12% || lr 0.00025
+Epoch[45/50](160/236) || training loss 0.6281 || training accuracy 80.00% || lr 0.00025
+Epoch[45/50](180/236) || training loss 0.6371 || training accuracy 78.36% || lr 0.00025
+Epoch[45/50](200/236) || training loss 0.6565 || training accuracy 76.33% || lr 0.00025
+Epoch[45/50](220/236) || training loss 0.6104 || training accuracy 79.53% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.48%, loss: 0.89 || best acc : 56.77%, best loss: 0.89
+Epoch[46/50](20/236) || training loss 0.6072 || training accuracy 79.45% || lr 0.00025
+Epoch[46/50](40/236) || training loss 0.7034 || training accuracy 75.39% || lr 0.00025
+Epoch[46/50](60/236) || training loss 0.5795 || training accuracy 80.23% || lr 0.00025
+Epoch[46/50](80/236) || training loss 0.6898 || training accuracy 75.94% || lr 0.00025
+Epoch[46/50](100/236) || training loss 0.6188 || training accuracy 78.52% || lr 0.00025
+Epoch[46/50](120/236) || training loss 0.633 || training accuracy 78.05% || lr 0.00025
+Epoch[46/50](140/236) || training loss 0.6125 || training accuracy 79.92% || lr 0.00025
+Epoch[46/50](160/236) || training loss 0.6158 || training accuracy 77.97% || lr 0.00025
+Epoch[46/50](180/236) || training loss 0.6213 || training accuracy 78.75% || lr 0.00025
+Epoch[46/50](200/236) || training loss 0.6401 || training accuracy 78.12% || lr 0.00025
+Epoch[46/50](220/236) || training loss 0.6262 || training accuracy 76.95% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.64%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[47/50](20/236) || training loss 0.5939 || training accuracy 79.69% || lr 0.00025
+Epoch[47/50](40/236) || training loss 0.6122 || training accuracy 79.61% || lr 0.00025
+Epoch[47/50](60/236) || training loss 0.6342 || training accuracy 77.89% || lr 0.00025
+Epoch[47/50](80/236) || training loss 0.6504 || training accuracy 77.42% || lr 0.00025
+Epoch[47/50](100/236) || training loss 0.6525 || training accuracy 76.41% || lr 0.00025
+Epoch[47/50](120/236) || training loss 0.6007 || training accuracy 78.28% || lr 0.00025
+Epoch[47/50](140/236) || training loss 0.6123 || training accuracy 78.12% || lr 0.00025
+Epoch[47/50](160/236) || training loss 0.6242 || training accuracy 77.66% || lr 0.00025
+Epoch[47/50](180/236) || training loss 0.6424 || training accuracy 77.73% || lr 0.00025
+Epoch[47/50](200/236) || training loss 0.6564 || training accuracy 78.44% || lr 0.00025
+Epoch[47/50](220/236) || training loss 0.6386 || training accuracy 80.31% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.32%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[48/50](20/236) || training loss 0.6455 || training accuracy 76.95% || lr 0.00025
+Epoch[48/50](40/236) || training loss 0.6204 || training accuracy 77.50% || lr 0.00025
+Epoch[48/50](60/236) || training loss 0.6311 || training accuracy 76.88% || lr 0.00025
+Epoch[48/50](80/236) || training loss 0.6258 || training accuracy 77.19% || lr 0.00025
+Epoch[48/50](100/236) || training loss 0.6069 || training accuracy 78.75% || lr 0.00025
+Epoch[48/50](120/236) || training loss 0.6316 || training accuracy 78.44% || lr 0.00025
+Epoch[48/50](140/236) || training loss 0.6587 || training accuracy 77.73% || lr 0.00025
+Epoch[48/50](160/236) || training loss 0.6259 || training accuracy 78.75% || lr 0.00025
+Epoch[48/50](180/236) || training loss 0.649 || training accuracy 76.48% || lr 0.00025
+Epoch[48/50](200/236) || training loss 0.6129 || training accuracy 79.77% || lr 0.00025
+Epoch[48/50](220/236) || training loss 0.6136 || training accuracy 77.73% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.38%, loss:  0.9 || best acc : 56.77%, best loss: 0.89
+Epoch[49/50](20/236) || training loss 0.6109 || training accuracy 78.75% || lr 0.00025
+Epoch[49/50](40/236) || training loss 0.6278 || training accuracy 78.67% || lr 0.00025
+Epoch[49/50](60/236) || training loss 0.6523 || training accuracy 76.80% || lr 0.00025
+Epoch[49/50](80/236) || training loss 0.628 || training accuracy 78.75% || lr 0.00025
+Epoch[49/50](100/236) || training loss 0.6353 || training accuracy 78.20% || lr 0.00025
+Epoch[49/50](120/236) || training loss 0.6247 || training accuracy 78.91% || lr 0.00025
+Epoch[49/50](140/236) || training loss 0.6257 || training accuracy 78.44% || lr 0.00025
+Epoch[49/50](160/236) || training loss 0.668 || training accuracy 76.80% || lr 0.00025
+Epoch[49/50](180/236) || training loss 0.6584 || training accuracy 77.50% || lr 0.00025
+Epoch[49/50](200/236) || training loss 0.6156 || training accuracy 79.53% || lr 0.00025
+Epoch[49/50](220/236) || training loss 0.5899 || training accuracy 79.53% || lr 0.00025
+Calculating validation results...
+[Val] acc : 56.22%, loss:  0.9 || best acc : 56.77%, best loss: 0.89

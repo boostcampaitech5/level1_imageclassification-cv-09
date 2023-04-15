@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "train.py", line 360, in <module>
+    train(data_dir, model_dir, args)
+  File "train.py", line 172, in train
+    outs = model(inputs)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/parallel/data_parallel.py", line 159, in forward
+    return self.module(*inputs[0], **kwargs[0])
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/opt/ml/workspace/level1_imageclassification-cv-09/model.py", line 27, in forward
+    x = F.relu(x)
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/functional.py", line 1136, in relu
+    result = torch.relu(input)
+RuntimeError: CUDA out of memory. Tried to allocate 78.00 MiB (GPU 0; 31.75 GiB total capacity; 725.01 MiB already allocated; 74.50 MiB free; 730.00 MiB reserved in total by PyTorch)

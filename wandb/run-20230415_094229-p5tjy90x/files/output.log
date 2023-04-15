@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "train.py", line 360, in <module>
+    train(data_dir, model_dir, args)
+  File "train.py", line 139, in train
+    model = model_module(num_classes=num_classes).to(device)
+  File "/opt/ml/workspace/level1_imageclassification-cv-09/model.py", line 44, in __init__
+    for param in self.resnet18.layer1.parameters():
+  File "/opt/conda/lib/python3.8/site-packages/torch/nn/modules/module.py", line 778, in __getattr__
+    raise ModuleAttributeError("'{}' object has no attribute '{}'".format(
+torch.nn.modules.module.ModuleAttributeError: 'Sequential' object has no attribute 'layer1'
