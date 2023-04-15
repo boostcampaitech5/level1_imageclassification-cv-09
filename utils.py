@@ -30,6 +30,15 @@ class ModelWrapper(torch.nn.Module):
         return logits
 
 def get_model_from_sd(state_dict, base_model):
+
+    if not 'classification_head.weight' in state_dict : 
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+            state_dict = new_state_dict
+
     feature_dim = state_dict['classification_head.weight'].shape[1]
     num_classes = state_dict['classification_head.weight'].shape[0]
     model = ModelWrapper(base_model, feature_dim, num_classes, normalize=True)
@@ -39,6 +48,8 @@ def get_model_from_sd(state_dict, base_model):
     model = model.cuda()
     devices = [x for x in range(torch.cuda.device_count())]
     return torch.nn.DataParallel(model,  device_ids=devices)
+
+    
 
 def maybe_dictionarize_batch(batch):
     if isinstance(batch, dict):

@@ -13,7 +13,7 @@ from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, grid_image
-from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr
+from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
 
@@ -129,8 +129,6 @@ if __name__ == '__main__':
     )
     num_classes = dataset.num_classes  # 18
 
-    transform = get_transforms()
-
     # Data Load
     train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
     # print("train_set[0]", train_set[0])
@@ -138,6 +136,7 @@ if __name__ == '__main__':
 
 
     # Augmentation
+    transform = get_transforms()
     train_set.dataset.set_transform(transform['train'])
     val_set.dataset.set_transform(transform['val'])
 
@@ -172,9 +171,9 @@ if __name__ == '__main__':
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
     model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
     state_dict = torch.load(model_path, map_location=torch.device('cuda'))
+    model = get_model_from_sd(state_dict, base_model)
     ###################################
 
-    model = ModelWrapper(base_model, feature_dim, NUM_CLASSES, normalize=True, initial_weights=clf)
 
     for p in model.parameters():
         p.data = p.data.float()
@@ -196,7 +195,7 @@ if __name__ == '__main__':
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
-                    "criterion_name" : "CrossEntropyLoss"})
+                    "criterion_name" : loss_fn})
 
     for epoch in range(args.epochs):
         # Train
@@ -267,9 +266,9 @@ if __name__ == '__main__':
                 if figure is None:
                     inputs_np = torch.clone(inputs).detach().cpu().permute(0, 2, 3, 1).numpy()
                     inputs_np = MaskBaseDataset.denormalize_image(inputs_np, dataset.mean, dataset.std)
-                    figure = grid_image(inputs_np, labels, pred, n=16, shuffle=True)
+                    figure = grid_image(inputs_np, labels, pred, n=25, shuffle=True) # 16
             top1 = correct / count
-        print(f'Val acc at epoch {epoch}: {100*top1:.2f}')
+        print(f'Val acc at epoch {epoch+1}: {100*top1:.2f}')
 
         if (epoch+1) % 5 == 0 :
             model_path = os.path.join(args.model_location, f'{args.name}{args.i}_epoch{epoch+1}.pt')
@@ -277,9 +276,10 @@ if __name__ == '__main__':
             torch.save(model.module.state_dict(), model_path)
 
         wandb.log({
-            "epoch" : epoch,
+            "epoch" : epoch+1,
             "Valid loss": loss.item(),
             "Valid acc" : 100*top1,
             "Valid fig" : wandb.Image(figure)
         })
 
+    wandb.finish()

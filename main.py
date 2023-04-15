@@ -107,7 +107,6 @@ if __name__ == '__main__':
                 )
 
     model_paths = [os.path.join(args.model_location, f'{model_name}{i}_epoch{epoch}.pt') for i in range(NUM_MODELS)]
-
     # Step 2: Evaluate individual models.
     if args.eval_individual_models or args.uniform_soup or args.greedy_soup:
         base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
@@ -118,6 +117,8 @@ if __name__ == '__main__':
         for j, model_path in enumerate(model_paths):
             # assert os.path.exists(model_path)
             state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+            
+
             model = get_model_from_sd(state_dict, base_model)
 
             results = {'model_name' : f'{model_name}{j}_epoch{epoch}'}
@@ -225,7 +226,7 @@ if __name__ == '__main__':
         model = get_model_from_sd(greedy_soup_params, base_model)
 
         # save final model
-        model_path = os.path.join(args.model_location, f'{model_name}_epoch{epoch}_greedysoup.pt')
+        model_path = os.path.join(args.model_location, f'{model_name}_epoch{epoch}_greedysoup_num{NUM_MODELS}.pt')
         print('Saving model to', model_path)
         torch.save(model.module.state_dict(), model_path)
 
