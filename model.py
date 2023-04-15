@@ -54,4 +54,5 @@ class CustomModel(nn.Module):
         x = self.fc(x)
         return x
 
-print("king")
+
+print("king king I'm King yeah")
