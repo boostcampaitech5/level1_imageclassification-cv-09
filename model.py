@@ -37,12 +37,12 @@ class BaseModel(nn.Module):
 class CustomModel(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
-        self.resnet18 = models.resnet18(pretrained=True)
+        self.resnet18 = models.resnet18()
 
-        for param in self.resnet18.layer1.parameters():
-            param.requires_grad = False
-        for param in self.resnet18.layer2.parameters():
-            param.requires_grad = False
+        # for param in self.resnet18.layer1.parameters():
+        #     param.requires_grad = False
+        # for param in self.resnet18.layer2.parameters():
+        #     param.requires_grad = False
 
         modules = list(self.resnet18.children())[:-1]
         self.resnet18 = nn.Sequential(*modules)

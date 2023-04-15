@@ -1,6 +1,29 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
+
+
+class EarlyStopping:
+    """
+    Earyly Stopping class
+    patience (default=5) 회 이내로 더 나아지는 loss가 없으면 학습종료 (True 반환)
+    """
+
+    def __init__(self, patience=5):
+        self.loss = np.inf
+        self.patience = 0
+        self.patience_limit = patience
+
+    def step(self, loss):
+        if self.loss > loss:
+            self.loss = loss
+            self.patience = 0
+        else:
+            self.patience += 1
+
+    def is_stop(self):
+        return self.patience >= self.patience_limit
 
 
 # https://discuss.pytorch.org/t/is-this-a-correct-implementation-for-focal-loss-in-pytorch/43327/8
@@ -88,3 +111,4 @@ def create_criterion(criterion_name, **kwargs):
     else:
         raise RuntimeError("Unknown loss (%s)" % criterion_name)
     return criterion
+
