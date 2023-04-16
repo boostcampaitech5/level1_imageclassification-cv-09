@@ -13,7 +13,7 @@ from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, grid_image
-from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
+from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd, get_model_from_sd_modified
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
     class_names = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen']
     clf = zeroshot_classifier(base_model, class_names, template, DEVICE)
-    NUM_CLASSES = dataset.num_classes  
+    NUM_CLASSES = len(class_names)
     feature_dim = base_model.visual.output_dim
 
     # state_dict = torch.load(model_path, map_location=torch.device('cpu'))
@@ -168,10 +168,10 @@ if __name__ == '__main__':
 
 
     #############모델 load#############
-    base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
+    base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
     model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
-    state_dict = torch.load(model_path, map_location=torch.device('cuda'))
-    model = get_model_from_sd(state_dict, base_model)
+    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+    model = get_model_from_sd_modified(state_dict, base_model, NUM_CLASSES, initial_weights=clf)
     ###################################
 
 
