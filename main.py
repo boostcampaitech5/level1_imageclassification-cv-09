@@ -72,7 +72,7 @@ if __name__ == '__main__':
     args = parse_arguments()
 
     ###############입력하세요##############
-    NUM_MODELS = 3
+    NUM_MODELS = 40
     epoch = 10
     val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
     ######################################
