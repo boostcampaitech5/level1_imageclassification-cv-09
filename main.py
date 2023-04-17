@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import random
 
-from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
+#from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA
 from datasets.maskbasedataset import MaskBaseDataset
 from utils import get_model_from_sd, test_model_on_dataset
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     args = parse_arguments()
 
     ###############입력하세요##############
-    NUM_MODELS = 3
+    NUM_MODELS = 1
     epoch = 10
     val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
     ######################################
@@ -138,7 +138,7 @@ if __name__ == '__main__':
                 f.write(json.dumps(results) + '\n')
 
     # Step 3: Uniform Soup.
-    if args.uniform_soup:
+    '''if args.uniform_soup:
         if os.path.exists(UNIFORM_SOUP_RESULTS_FILE):
             os.remove(UNIFORM_SOUP_RESULTS_FILE)
 
@@ -167,7 +167,7 @@ if __name__ == '__main__':
             print(accuracy)
        
         with open(UNIFORM_SOUP_RESULTS_FILE, 'a+') as f:
-            f.write(json.dumps(results) + '\n')
+            f.write(json.dumps(results) + '\n')'''
 
 
     # Step 4: Greedy Soup.
@@ -241,7 +241,7 @@ if __name__ == '__main__':
         #     f.write(json.dumps(results) + '\n')
 
     # Step 5: Plot.
-    if args.plot:
+    '''if args.plot:
         individual_model_db = pd.read_json(INDIVIDUAL_MODEL_RESULTS_FILE, lines=True)
         individual_model_db['OOD'] = 1./5 * (individual_model_db['ImageNetV2'] + 
             individual_model_db['ImageNetR'] + individual_model_db['ImageNetSketch'] + 
@@ -302,4 +302,4 @@ if __name__ == '__main__':
         ax.set_xlabel('ImageNet Accuracy (top-1%)', fontsize=16)
         ax.grid()
         ax.legend(fontsize=13)
-        plt.savefig('figure.png', bbox_inches='tight')
+        plt.savefig('figure.png', bbox_inches='tight')'''
