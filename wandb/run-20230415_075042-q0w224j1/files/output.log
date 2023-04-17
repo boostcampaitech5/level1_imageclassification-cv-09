@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "train.py", line 360, in <module>
-    train(data_dir, model_dir, args)
-  File "train.py", line 145, in train
-    opt_module = getattr(import_module("torch.optim"), args.optimizer)  # default: SGD
-AttributeError: module 'torch.optim' has no attribute 'RMSProp'

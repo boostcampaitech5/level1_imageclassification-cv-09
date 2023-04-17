@@ -7,21 +7,21 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 
-from dataset import TestDataset, MaskBaseDataset
+from datasets.maskbasedataset import TestDataset, MaskBaseDataset
+import clip
+import math
+# from utils import get_model_from_sd
 
+###############입력하세요##############
+model_name = 'finetuned_aug_combine0_epoch10.pt'
+######################################
 
 def load_model(saved_model, num_classes, device):
-    model_cls = getattr(import_module("model"), args.model)
-    model = model_cls(
-        num_classes=num_classes
-    )
 
-    # tarpath = os.path.join(saved_model, 'best.tar.gz')
-    # tar = tarfile.open(tarpath, 'r:gz')
-    # tar.extractall(path=saved_model)
-
-    model_path = os.path.join(saved_model, 'best.pth')
-    model.load_state_dict(torch.load(model_path, map_location=device))
+    model_path = os.path.join('/opt/ml/model-soups/model', model_name)
+    base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
+    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+    model = get_model_from_sd(state_dict, base_model)
 
     return model
 
@@ -62,17 +62,62 @@ def inference(data_dir, model_dir, output_dir, args):
             preds.extend(pred.cpu().numpy())
 
     info['ans'] = preds
-    save_path = os.path.join(output_dir, f'output.csv')
+    save_path = os.path.join(output_dir, f'output_{model_name}.csv')
     info.to_csv(save_path, index=False)
     print(f"Inference Done! Inference result saved at {save_path}")
 
+def get_model_from_sd(state_dict, base_model):
+    
+    if not 'classification_head.weight' in state_dict : 
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+            state_dict = new_state_dict
 
-if __name__ == '__main__':
+    feature_dim = state_dict['classification_head.weight'].shape[1]
+    num_classes = state_dict['classification_head.weight'].shape[0]
+    model = ModelWrapper(base_model, feature_dim, num_classes, normalize=True)
+    for p in model.parameters():
+        p.data = p.data.float()
+    model.load_state_dict(state_dict)
+    model = model.cuda()
+    devices = [x for x in range(torch.cuda.device_count())]
+    return torch.nn.DataParallel(model,  device_ids=devices)
+
+class ModelWrapper(torch.nn.Module):
+    def __init__(self, model, feature_dim, num_classes, normalize=False, initial_weights=None):
+        super(ModelWrapper, self).__init__()
+        self.model = model
+        self.classification_head = torch.nn.Linear(feature_dim, num_classes)
+        self.normalize = normalize
+        if initial_weights is None:
+            initial_weights = torch.zeros_like(self.classification_head.weight)
+            torch.nn.init.kaiming_uniform_(initial_weights, a=math.sqrt(5))
+        self.classification_head.weight = torch.nn.Parameter(initial_weights.clone())
+        self.classification_head.bias = torch.nn.Parameter(
+            torch.zeros_like(self.classification_head.bias))
+
+        # Note: modified. Get rid of the language part.
+        if hasattr(self.model, 'transformer'):
+            delattr(self.model, 'transformer')
+
+    def forward(self, images, return_features=False):
+        features = self.model.encode_image(images)
+        if self.normalize:
+            features = features / features.norm(dim=-1, keepdim=True)
+        logits = self.classification_head(features)
+        if return_features:
+            return logits, features
+        return logits
+
+if __name__ == '__main__':#####################################resize default값 고치기!!!!!!!!!!!!!!#############################
     parser = argparse.ArgumentParser()
 
     # Data and model checkpoints directories
     parser.add_argument('--batch_size', type=int, default=1000, help='input batch size for validing (default: 1000)')
-    parser.add_argument('--resize', type=tuple, default=(96, 128), help='resize size for image when you trained (default: (96, 128))')
+    parser.add_argument('--resize', type=tuple, default=(224, 224), help='resize size for image when you trained (default: (96, 128))')
     parser.add_argument('--model', type=str, default='BaseModel', help='model type (default: BaseModel)')
 
     # Container environment

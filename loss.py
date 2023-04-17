@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+<<<<<<< HEAD
 import numpy as np
 
 
@@ -24,11 +25,18 @@ class EarlyStopping:
 
     def is_stop(self):
         return self.patience >= self.patience_limit
+=======
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
 
 
 # https://discuss.pytorch.org/t/is-this-a-correct-implementation-for-focal-loss-in-pytorch/43327/8
 class FocalLoss(nn.Module):
+<<<<<<< HEAD
     def __init__(self, weight=None, gamma=2.0, reduction="mean"):
+=======
+    def __init__(self, weight=None,
+                 gamma=2., reduction='mean'):
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
         nn.Module.__init__(self)
         self.weight = weight
         self.gamma = gamma
@@ -41,7 +49,11 @@ class FocalLoss(nn.Module):
             ((1 - prob) ** self.gamma) * log_prob,
             target_tensor,
             weight=self.weight,
+<<<<<<< HEAD
             reduction=self.reduction,
+=======
+            reduction=self.reduction
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
         )
 
 
@@ -64,7 +76,11 @@ class LabelSmoothingLoss(nn.Module):
 
 # https://gist.github.com/SuperShinyEyes/dcc68a08ff8b615442e3bc6a9b55a354
 class F1Loss(nn.Module):
+<<<<<<< HEAD
     def __init__(self, classes=18, epsilon=1e-7):
+=======
+    def __init__(self, classes=3, epsilon=1e-7):
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
         super().__init__()
         self.classes = classes
         self.epsilon = epsilon
@@ -89,10 +105,17 @@ class F1Loss(nn.Module):
 
 
 _criterion_entrypoints = {
+<<<<<<< HEAD
     "cross_entropy": nn.CrossEntropyLoss,
     "focal": FocalLoss,
     "label_smoothing": LabelSmoothingLoss,
     "f1": F1Loss,
+=======
+    'cross_entropy': nn.CrossEntropyLoss,
+    'focal': FocalLoss,
+    'label_smoothing': LabelSmoothingLoss,
+    'f1': F1Loss
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
 }
 
 
@@ -109,6 +132,11 @@ def create_criterion(criterion_name, **kwargs):
         create_fn = criterion_entrypoint(criterion_name)
         criterion = create_fn(**kwargs)
     else:
+<<<<<<< HEAD
         raise RuntimeError("Unknown loss (%s)" % criterion_name)
     return criterion
 
+=======
+        raise RuntimeError('Unknown loss (%s)' % criterion_name)
+    return criterion
+>>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
