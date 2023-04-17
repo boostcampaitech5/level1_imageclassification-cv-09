@@ -7,6 +7,7 @@ class ModelWrapper(torch.nn.Module):
     def __init__(self, model, feature_dim, num_classes, normalize=False, initial_weights=None):
         super(ModelWrapper, self).__init__()
         self.model = model
+        self.feature_dim = feature_dim
         self.classification_head = torch.nn.Linear(feature_dim, num_classes)
         self.normalize = normalize
         if initial_weights is None:
@@ -20,6 +21,18 @@ class ModelWrapper(torch.nn.Module):
         if hasattr(self.model, 'transformer'):
             delattr(self.model, 'transformer')
 
+    def change_classifier(self, num_classes, initial_weights=None):
+
+        self.classification_head = torch.nn.Linear(self.feature_dim, num_classes)
+        if initial_weights is None:
+            initial_weights = torch.zeros_like(self.classification_head.weight)
+            torch.nn.init.kaiming_uniform_(initial_weights, a=math.sqrt(5))
+        self.classification_head.weight = torch.nn.Parameter(initial_weights.clone())
+        self.classification_head.bias = torch.nn.Parameter(
+            torch.zeros_like(self.classification_head.bias))
+
+
+
     def forward(self, images, return_features=False):
         features = self.model.encode_image(images)
         if self.normalize:
@@ -30,12 +43,46 @@ class ModelWrapper(torch.nn.Module):
         return logits
 
 def get_model_from_sd(state_dict, base_model):
+
+    if not 'classification_head.weight' in state_dict : 
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+            state_dict = new_state_dict
+
     feature_dim = state_dict['classification_head.weight'].shape[1]
     num_classes = state_dict['classification_head.weight'].shape[0]
     model = ModelWrapper(base_model, feature_dim, num_classes, normalize=True)
     for p in model.parameters():
         p.data = p.data.float()
     model.load_state_dict(state_dict)
+    model = model.cuda()
+    devices = [x for x in range(torch.cuda.device_count())]
+    return torch.nn.DataParallel(model,  device_ids=devices)
+
+def get_model_from_sd_modified(state_dict, base_model, num_classes_, initial_weights=None):
+
+    if not 'classification_head.weight' in state_dict : 
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+            state_dict = new_state_dict
+
+    feature_dim = state_dict['classification_head.weight'].shape[1]
+    num_classes = state_dict['classification_head.weight'].shape[0]
+    model = ModelWrapper(base_model, feature_dim, num_classes, normalize=True)
+
+
+    for p in model.parameters():
+        p.data = p.data.float()
+    model.load_state_dict(state_dict)
+
+    model.change_classifier(num_classes_, initial_weights)
+
     model = model.cuda()
     devices = [x for x in range(torch.cuda.device_count())]
     return torch.nn.DataParallel(model,  device_ids=devices)

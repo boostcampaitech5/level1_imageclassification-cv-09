@@ -13,7 +13,7 @@ import math
 # from utils import get_model_from_sd
 
 ###############입력하세요##############
-model_name = 'vanilla_greedysoup.pt'
+model_name = 'finetuned27_epoch10.pt'
 ######################################
 
 def load_model(saved_model, num_classes, device):
