@@ -49,11 +49,7 @@ class FocalLoss(nn.Module):
             ((1 - prob) ** self.gamma) * log_prob,
             target_tensor,
             weight=self.weight,
-<<<<<<< HEAD
-            reduction=self.reduction,
-=======
             reduction=self.reduction
->>>>>>> 35fb5a6dbe7f64242a355b206455c9f2c59cb6fa
         )
 
 
