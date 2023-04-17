@@ -76,7 +76,6 @@ class AgeLabels(int, Enum):
         else:
             return cls.OLD
 
-
 class MaskBaseDataset(Dataset):
     num_classes = 3 * 2 * 3
 
@@ -170,6 +169,7 @@ class MaskBaseDataset(Dataset):
         if self.transform is not None : 
             transformed = self.transform(image=image)
             image = transformed["image"]
+        
         # image_transform = self.transform(image)
         return image, multi_class_label
         
@@ -268,17 +268,17 @@ class MaskBaseDataset(Dataset):
     # def clear(self):
     #     # 데이터셋 해제 코드
     #     self = None
-    def __del__(self):
-        # 데이터셋 해제 코드
-        self.data_dir = None
-        self.mean = None
-        self.std = None
-        self.val_ratio = None
-        self.batch_size = None
-        self.num_workers = None
+    # def __del__(self):
+    #     # 데이터셋 해제 코드
+    #     self.data_dir = None
+    #     self.mean = None
+    #     self.std = None
+    #     self.val_ratio = None
+    #     self.batch_size = None
+    #     self.num_workers = None
 
-        self.transform = None
-        self.test_loader = None
+    #     self.transform = None
+    #     self.test_loader = None
 
 def get_transforms(need=('train', 'val'), img_size=(224, 224)):
     """
@@ -299,9 +299,10 @@ def get_transforms(need=('train', 'val'), img_size=(224, 224)):
     transformations = {}
     if 'train' in need:
         transformations['train'] = Compose([
+            # CenterCrop(height=412, width=384),
             Resize(img_size[0], img_size[1], p=1.0),
             HorizontalFlip(p=0.5),
-            ShiftScaleRotate(p=0.5),
+            # ShiftScaleRotate(p=0.5),
             HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
             RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
             GaussNoise(p=0.5),

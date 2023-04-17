@@ -13,12 +13,10 @@ import math
 # from utils import get_model_from_sd
 
 ###############입력하세요##############
-model_name = 'finetuned27_epoch10.pt'
+model_name = 'finetuned_aug_combine0_epoch10.pt'
 ######################################
 
 def load_model(saved_model, num_classes, device):
-
-    
 
     model_path = os.path.join('/opt/ml/model-soups/model', model_name)
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
@@ -69,6 +67,15 @@ def inference(data_dir, model_dir, output_dir, args):
     print(f"Inference Done! Inference result saved at {save_path}")
 
 def get_model_from_sd(state_dict, base_model):
+    
+    if not 'classification_head.weight' in state_dict : 
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+            state_dict = new_state_dict
+
     feature_dim = state_dict['classification_head.weight'].shape[1]
     num_classes = state_dict['classification_head.weight'].shape[0]
     model = ModelWrapper(base_model, feature_dim, num_classes, normalize=True)
