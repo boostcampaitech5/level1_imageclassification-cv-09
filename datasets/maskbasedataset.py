@@ -76,6 +76,22 @@ class AgeLabels(int, Enum):
         else:
             return cls.OLD
 
+def change_sex(gender):
+    if gender == 'male':
+        return 'female'
+    else:
+        return 'male'
+    
+def change_incorrect_normal(file_name):
+    if file_name == 'normal':
+        return MaskLabels.INCORRECT
+    if file_name == 'incorrect_mask':
+        return MaskLabels.NORMAL
+    
+def change_incorrect_to_mask(file_name):
+    if file_name == 'incorrect_mask':
+        return MaskLabels.MASK
+
 class MaskBaseDataset(Dataset):
     num_classes = 3 * 2 * 3
 
@@ -103,7 +119,7 @@ class MaskBaseDataset(Dataset):
         self.gender_labels = []
         self.age_labels = []
 
-        self.data_dir = data_dir
+        self.data_dir = data_dir        # '/opt/ml/input/data/train/images' -> 폴더명 ex) 000001_female_Asian_45
         self.mean = mean
         self.std = std
         self.val_ratio = val_ratio
@@ -132,6 +148,18 @@ class MaskBaseDataset(Dataset):
                 mask_label = self._file_names[_file_name]
 
                 id, gender, race, age = profile.split("_")
+                
+                if id == '004418' or id == '005227' or id == '000020':
+                    mask_label = change_incorrect_normal(_file_name)
+                    
+                if id == '003574' or id == '000645':
+                    mask_label = change_incorrect_to_mask(_file_name)
+                
+                if id == '001200' or id == '004432' or id == '005223' or id == '001498-1' or \
+                id == '000725' or id == '006359' or id == '006360' or id == '006361' or \
+                id == '006362' or id == '006363' or id == '006364':
+                    gender = change_sex(gender)
+                    
                 gender_label = GenderLabels.from_str(gender)
                 age_label = AgeLabels.from_number(age)
 
