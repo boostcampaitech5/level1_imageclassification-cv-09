@@ -8,6 +8,10 @@ import time
 import wandb
 import random 
 import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+import torchvision.transforms.functional as TF
+import copy
 
 from timm.data.transforms_factory import transforms_imagenet_train
 
@@ -16,6 +20,7 @@ from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_tran
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd, get_model_from_sd_modified
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
+import datasets.maskbasedataset 
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -111,35 +116,29 @@ if __name__ == '__main__':
 
     base_model, preprocess = clip.load(args.model, 'cuda', jit=False)
     
-    # 98p is the 98% of ImageNet train set that we train on -- the other 2% is hodl-out val.
-    if args.timm_aug:
-        train_preprocess = transforms_imagenet_train(
-                img_size=base_model.visual.input_resolution,
-                mean=(0.48145466, 0.4578275, 0.40821073),
-                std=(0.26862954, 0.26130258, 0.27577711)
-            )
-    else:
-        train_preprocess = preprocess
-
-    # train_dset = ImageNet98p(train_preprocess, location=args.data_location, batch_size=args.batch_size, num_workers=args.workers)
-    # test_dset = ImageNet(preprocess, location=args.data_location, batch_size=args.batch_size, num_workers=args.workers)
-
     dataset = MaskBaseDataset(
         data_dir='/opt/ml/input/data/train/images'
     )
-    num_classes = dataset.num_classes  # 18
 
     # Data Load
     train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+    train_set.dataset = copy.deepcopy(dataset)
     # print("train_set[0]", train_set[0])
     # print("val_set[0]", val_set[0])
 
-
     # Augmentation
     transform = get_transforms()
-    train_set.dataset.set_transform(transform['train'])
-    val_set.dataset.set_transform(transform['val'])
 
+    ## 이미지 저장
+    # image_data = np.transpose(train_set[0][0], (1, 2, 0))
+    # mean=(0.548, 0.504, 0.479)
+    # std=(0.237, 0.247, 0.246)
+    # image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
+    # print(image_data.shape)
+    # img_pil = TF.to_pil_image(image_data)
+    # img_pil.save('temp/train_set[0][0]_centorcrop.png')
+
+    # exit()
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
