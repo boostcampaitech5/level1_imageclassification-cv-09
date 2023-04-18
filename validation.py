@@ -117,6 +117,13 @@ if __name__ == '__main__':
     
     args = parse_arguments()
     DEVICE = 'cuda'
+    
+    #############입력하세요#############
+    model_name = 'finetuned_centercrop3000_epoch10.pt'
+    ###################################
+
+    model_path = os.path.join(args.model_location, model_name) 
+    model = load_model(model_path, 18, 'cuda').to('cuda')
 
     if args.random_seed != -1 : 
         torch.manual_seed(args.random_seed)
@@ -162,11 +169,6 @@ if __name__ == '__main__':
         drop_last=True,
     )
 
-    #############모델 load#############
-    model_name = 'finetuned_centercrop3000_epoch10.pt'
-    model_path = os.path.join(args.model_location, model_name) 
-    model = load_model(model_path, 18, 'cuda').to('cuda')
-    ###################################
 
     for p in model.parameters():
         p.data = p.data.float()
