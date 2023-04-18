@@ -85,11 +85,17 @@ def change_sex(gender):
 def change_incorrect_normal(file_name):
     if file_name == 'normal':
         return MaskLabels.INCORRECT
-    if file_name == 'incorrect_mask':
+    elif file_name == 'incorrect_mask':
         return MaskLabels.NORMAL
+    else:
+        return MaskLabels.MASK
     
 def change_incorrect_to_mask(file_name):
     if file_name == 'incorrect_mask':
+        return MaskLabels.MASK
+    elif file_name == 'normal':
+        return MaskLabels.NORMAL
+    else:
         return MaskLabels.MASK
 
 class MaskBaseDataset(Dataset):
