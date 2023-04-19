@@ -16,9 +16,13 @@ from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
 from zeroshot import zeroshot_classifier
-from inference import load_model
 import torchvision.transforms.functional as TF
 import copy
+
+
+#############입력하세요#############
+model_name = 'finetuned_centercrop3000_epoch10.pt'
+###################################
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -82,7 +86,6 @@ def parse_arguments():
 
     return parser.parse_args()
 
-    
 def grid_image(np_images, gts, preds, is_wrong, n=16):
     batch_size = np_images.shape[0]
     index = is_wrong.nonzero()
@@ -112,11 +115,22 @@ def grid_image(np_images, gts, preds, is_wrong, n=16):
 
     return figure
 
+def load_model(saved_model, num_classes, device):
+    model_path = os.path.join('/opt/ml/level1_imageclassification-cv-09/model', model_name)
+    base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
+    print('model_path', model_path)
+    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+    model = get_model_from_sd(state_dict, base_model)
+
+    return model
 
 if __name__ == '__main__':
     
     args = parse_arguments()
     DEVICE = 'cuda'
+    
+    model_path = os.path.join(args.model_location, model_name) 
+    model = load_model(model_path, 18, 'cuda').to('cuda')
 
     if args.random_seed != -1 : 
         torch.manual_seed(args.random_seed)
@@ -162,11 +176,6 @@ if __name__ == '__main__':
         drop_last=True,
     )
 
-    #############모델 load#############
-    model_name = 'finetuned_centercrop3000_epoch10.pt'
-    model_path = os.path.join(args.model_location, model_name) 
-    model = load_model(model_path, 18, 'cuda').to('cuda')
-    ###################################
 
     for p in model.parameters():
         p.data = p.data.float()
@@ -241,7 +250,10 @@ if __name__ == '__main__':
             inputs_np = MaskBaseDataset.denormalize_image(inputs_np, dataset.mean, dataset.std)
 
             figure = grid_image(inputs_np, labels, pred, is_wrong, n=25) # 16
-            figure.savefig(f'val_img/my_plot_batch{i}.png')
+
+            dir = f'val_img/{model_name}'
+            os.makedirs(dir, exist_ok=True)
+            figure.savefig(f'{dir}/my_plot_batch{i}.png')
 
         top1 = correct / count
         wrong_percent = wrong_percent.to(torch.float)
