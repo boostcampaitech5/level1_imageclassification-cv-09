@@ -1,0 +1,94 @@
+{
+    "os": "Linux-4.4.0-210-generic-x86_64-with-glibc2.10",
+    "python": "3.8.16",
+    "heartbeatAt": "2023-04-18T14:04:14.115273",
+    "startedAt": "2023-04-18T14:04:13.227488",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--name",
+        "original_sampler",
+        "--i",
+        "0",
+        "--random-seed",
+        "48",
+        "--model-location",
+        "../downloaded_model/"
+    ],
+    "state": "running",
+    "program": "finetune.py",
+    "codePath": "finetune.py",
+    "git": {
+        "remote": "https://github.com/boostcampaitech5/level1_imageclassification-cv-09.git",
+        "commit": "6fe5ba8a6de41d8cfda4b38b880d64935388a359"
+    },
+    "email": "hyuns6677@gmail.com",
+    "root": "/opt/ml/workspace/level1_imageclassification-cv-09",
+    "host": "3ed5eb54368b",
+    "username": "root",
+    "executable": "/opt/conda/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2200.0,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2200.0,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "total": 98.30496215820312,
+        "used": 59.917057037353516
+    },
+    "gpu": "Tesla V100-PCIE-32GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "Tesla V100-PCIE-32GB",
+            "memory_total": 34089730048
+        }
+    ],
+    "memory": {
+        "total": 88.50577545166016
+    }
+}
