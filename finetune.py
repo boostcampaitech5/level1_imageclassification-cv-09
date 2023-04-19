@@ -124,10 +124,10 @@ if __name__ == '__main__':
     train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
     train_set1.dataset = copy.deepcopy(dataset)
 
-    need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
+    # need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
 
-    train_set2 = dataset.getSubset(need_change_idxs)
-    train_set2.dataset = copy.deepcopy(dataset)
+    # train_set2 = dataset.getSubset(need_change_idxs)
+    # train_set2.dataset = copy.deepcopy(dataset)
 
     # Augmentation
     transform = get_transforms()
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     train_set1.dataset.set_transform(transform['train'])
     val_set.dataset.set_transform(transform['val'])
 
-    train_set2.dataset.set_transform(transform['train2'])
+    # train_set2.dataset.set_transform(transform['train2'])
     ## 이미지 저장
     # image_data = np.transpose(train_set[0][0], (1, 2, 0))
     # mean=(0.548, 0.504, 0.479)
@@ -147,7 +147,8 @@ if __name__ == '__main__':
 
     # exit()
 
-    train_set = ConcatDataset([train_set1, train_set2])
+    # train_set = ConcatDataset([train_set1, train_set2])
+    train_set = train_set1
 
     train_loader = torch.utils.data.DataLoader(
         train_set,
