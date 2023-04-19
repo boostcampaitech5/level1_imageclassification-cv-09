@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
-from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms
+from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, AgeDataset
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
 from zeroshot import zeroshot_classifier
 import torchvision.transforms.functional as TF
@@ -21,7 +21,7 @@ import copy
 
 
 #############입력하세요#############
-model_name = 'jitterflip_seed340_epoch20.pt'
+model_name = 'onlyAge0_epoch15.pt'
 ###################################
 
 def parse_arguments():
@@ -93,18 +93,14 @@ def grid_image(np_images, gts, preds, is_wrong, n=16):
     figure = plt.figure(figsize=(12, 18 + 2))  # cautions: hardcoded, 이미지 크기에 따라 figsize 를 조정해야 할 수 있습니다. T.T
     plt.subplots_adjust(top=0.8)  # cautions: hardcoded, 이미지 크기에 따라 top 를 조정해야 할 수 있습니다. T.T
     n_grid = int(np.ceil(n ** 0.5))
-    tasks = ["mask", "gender", "age"]
+    tasks = ["age"]
 
     for i, idx in enumerate(index):
         gt = gts[idx].item()
         pred = preds[idx].item()
         image = np_images[idx]
-        gt_decoded_labels = MaskBaseDataset.decode_multi_class(gt)
-        pred_decoded_labels = MaskBaseDataset.decode_multi_class(pred)
         title = "\n".join([
-            f"{task} - gt: {gt_label}, pred: {pred_label}"
-            for gt_label, pred_label, task
-            in zip(gt_decoded_labels, pred_decoded_labels, tasks)
+            f"{tasks[0]} - gt: {gt}, pred: {pred}"
         ])
 
         plt.subplot(n_grid, n_grid, i + 1, title=title)
@@ -115,8 +111,7 @@ def grid_image(np_images, gts, preds, is_wrong, n=16):
 
     return figure
 
-def load_model(saved_model, num_classes, device):
-    model_path = os.path.join('/opt/ml/model-soups/model', model_name)
+def load_model(model_path, device):
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
     print('model_path', model_path)
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
@@ -129,10 +124,10 @@ if __name__ == '__main__':
     args = parse_arguments()
     DEVICE = 'cuda'
 
-    NUM_CLASSES = 18
+    NUM_CLASSES = 3
     
     model_path = os.path.join(args.model_location, model_name) 
-    model = load_model(model_path, NUM_CLASSES, 'cuda').to('cuda')
+    model = load_model(model_path, 'cuda').to('cuda')
 
     if args.random_seed != -1 : 
         torch.manual_seed(args.random_seed)
@@ -143,7 +138,7 @@ if __name__ == '__main__':
         np.random.seed(args.random_seed)
         random.seed(args.random_seed)
 
-    dataset = MaskBaseDataset(
+    dataset = AgeDataset(
         data_dir='/opt/ml/input/data/train/images'
     )
 
@@ -154,20 +149,20 @@ if __name__ == '__main__':
     transform = get_transforms()
     val_set.dataset.set_transform(transform['val'])
 
-    
-    classes = [0 for _ in range(3*2*3)]
-    mask_cls = [0 for _ in range(3)]
-    gender_cls = [0 for _ in range(2)]
     age_cls = [0 for _ in range(3)]
 
     ## 전체 val dataset의 클래스별 분류
+    # for i in range(len(val_set)):
+    #     _, multi_class_label =  val_set[i]
+    #     mask_label, gender_label, age_label = MaskBaseDataset.decode_multi_class(multi_class_label)
+    #     mask_cls[mask_label] +=1
+    #     gender_cls[gender_label] +=1
+    #     age_cls[age_label] +=1
+    #     classes[multi_class_label] += 1
+
     for i in range(len(val_set)):
-        _, multi_class_label =  val_set[i]
-        mask_label, gender_label, age_label = MaskBaseDataset.decode_multi_class(multi_class_label)
-        mask_cls[mask_label] +=1
-        gender_cls[gender_label] +=1
+        _, age_label =  val_set[i]
         age_cls[age_label] +=1
-        classes[multi_class_label] += 1
 
     val_loader = torch.utils.data.DataLoader(
         val_set,
@@ -192,9 +187,6 @@ if __name__ == '__main__':
     loss_fn = torch.nn.CrossEntropyLoss()
 
     correct, count = 0.0, 0.0
-    wrong_percent = torch.tensor([0 for _ in range(18)], device='cuda')
-    wrong_percent_mask = torch.tensor([0 for _ in range(3)], device='cuda')
-    wrong_percent_gender = torch.tensor([0 for _ in range(2)], device='cuda')
     wrong_percent_age = torch.tensor([0 for _ in range(3)], device='cuda')
 
     # #Evaluate
@@ -224,29 +216,13 @@ if __name__ == '__main__':
             wrong_label = labels[is_wrong]
             wrong_pred = pred[is_wrong]
 
-            unique_values, counts = torch.unique(wrong_label, return_counts=True)
 
             for i in range(len(wrong_label)):
-                mask_label, gender_label, age_label = MaskBaseDataset.decode_multi_class(wrong_label[i])
-                mask_pred, gender_pred, age_pred = MaskBaseDataset.decode_multi_class(wrong_pred[i])
-                if mask_label != mask_pred : 
-                    wrong_percent_mask[mask_label] += 1
-                if gender_label != gender_pred : 
-                    wrong_percent_gender[gender_label] += 1
-                if age_label != age_pred : 
-                    wrong_percent_age[age_label] += 1
-
-            for value, cnt in zip(unique_values, counts):
-                wrong_percent[value] += cnt
-            num_true_values_per_col = is_wrong.sum(dim=0)
+                wrong_percent_age[wrong_label[i]] += 1
 
             count += len(logits)
             pbar.set_description(
                 f"Val loss: {loss.item():.4f}   Acc: {100*correct/count:.2f}")
-
-            if wrong_imgs is None : 
-                wrong_imgs = torch.clone(inputs[is_wrong]).detach().cpu().permute(0, 2, 3, 1).numpy()
-                wrong_imgs = MaskBaseDataset.denormalize_image(wrong_imgs, dataset.mean, dataset.std)
 
             inputs_np = torch.clone(inputs).detach().cpu().permute(0, 2, 3, 1).numpy()
             inputs_np = MaskBaseDataset.denormalize_image(inputs_np, dataset.mean, dataset.std)
@@ -258,32 +234,11 @@ if __name__ == '__main__':
             figure.savefig(f'{dir}/my_plot_batch{i}.png')
 
         top1 = correct / count
-        wrong_percent = wrong_percent.to(torch.float)
-        classes = torch.tensor(classes, device='cuda')
-        mask_cls = torch.tensor(mask_cls, device='cuda')
-        gender_cls = torch.tensor(gender_cls, device='cuda')
         age_cls = torch.tensor(age_cls, device='cuda')
-
-        wrong_num = copy.deepcopy(wrong_percent)
-        wrong_num_mask = copy.deepcopy(wrong_percent_mask)
-        wrong_num_gender = copy.deepcopy(wrong_percent_gender)
         wrong_num_age = copy.deepcopy(wrong_percent_age)
-
-        wrong_percent = wrong_percent/classes * 100
-        wrong_percent_mask = wrong_percent_mask/mask_cls * 100
-        wrong_percent_gender = wrong_percent_gender/gender_cls * 100
         wrong_percent_age = wrong_percent_age/age_cls * 100
 
     print('=============')
-    for i in range(len(wrong_percent)): 
-        print(f'{i} class in total :  {wrong_percent[i]:.4f}, {wrong_num[i]} / {classes[i]}')
-    print('-------------')
-    for i in range(len(wrong_percent_mask)): 
-        print(f'{i} class in mask:  {wrong_percent_mask[i]:.4f}, {wrong_num_mask[i]} / {mask_cls[i]}')
-    print('-------------')
-    for i in range(len(wrong_percent_gender)): 
-        print(f'{i} class in gender:  {wrong_percent_gender[i]:.4f}, {wrong_num_gender[i]} / {gender_cls[i]}')
-    print('-------------')
     for i in range(len(wrong_percent_age)): 
         print(f'{i} class in age:  {wrong_percent_age[i]:.4f}, {wrong_num_age[i]} / {age_cls[i]}')
 

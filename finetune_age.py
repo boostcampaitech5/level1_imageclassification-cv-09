@@ -16,11 +16,12 @@ import copy
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
-from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, grid_image
+from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, grid_image, AgeDataset
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd, get_model_from_sd_modified
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
 import datasets.maskbasedataset 
+from pytorch_metric_learning import losses
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
@@ -116,31 +117,34 @@ if __name__ == '__main__':
 
     base_model, preprocess = clip.load(args.model, 'cuda', jit=False)
     
-    dataset = MaskBaseDataset(
+    dataset = AgeDataset(
         data_dir='/opt/ml/input/data/train/images'
     )
 
     # Data Load
     train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
     train_set.dataset = copy.deepcopy(dataset)
-    # print("train_set[0]", train_set[0])
-    # print("val_set[0]", val_set[0])
 
     # Augmentation
     transform = get_transforms()
     train_set.dataset.set_transform(transform['train'])
     val_set.dataset.set_transform(transform['val'])
 
+
     ## 이미지 저장
-    # image_data = np.transpose(train_set[0][0], (1, 2, 0))
     # mean=(0.548, 0.504, 0.479)
     # std=(0.237, 0.247, 0.246)
+    # image_data = np.transpose(train_set[0][0], (1, 2, 0))
     # image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
+    # image_data2 = np.transpose(train_set[2][0], (1, 2, 0))
+    # image_data2 = MaskBaseDataset.denormalize_image(np.array(image_data2), mean, std)
     # print(image_data.shape)
     # img_pil = TF.to_pil_image(image_data)
-    # img_pil.save('temp/train_set[0][0]_centorcrop.png')
-
+    # img_pil2 = TF.to_pil_image(image_data2)
+    # img_pil.save('temp/temp2.png')
+    # img_pil2.save('temp/temp3.png')
     # exit()
+
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -159,14 +163,13 @@ if __name__ == '__main__':
         drop_last=True,
     )
 
-    class_names = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen']
+    class_names = ['young', 'middle', 'old']
     clf = zeroshot_classifier(base_model, class_names, template, DEVICE)
     NUM_CLASSES = len(class_names)
     feature_dim = base_model.visual.output_dim
 
     # state_dict = torch.load(model_path, map_location=torch.device('cpu'))
     # model = ModelWrapper(base_model, feature_dim, NUM_CLASSES, normalize=True, initial_weights=clf)
-
 
     #############모델 load#############
     base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
@@ -191,8 +194,11 @@ if __name__ == '__main__':
     scheduler = cosine_lr(optimizer, args.lr, args.warmup_length, args.epochs * num_batches)
 
     loss_fn = torch.nn.CrossEntropyLoss()
+    
+    # loss_fn = losses.ContrastiveLoss(pos_margin=0, neg_margin=1)
 
-    wandb.init(name=args.name+str(args.i), config={"batch_size": args.batch_size,
+
+    wandb.init(project="hyunmin", name=args.name+str(args.i), config={"batch_size": args.batch_size,
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
@@ -255,6 +261,7 @@ if __name__ == '__main__':
                 inputs, labels = batch['images'].to(DEVICE), batch['labels'].to(DEVICE)
 
                 logits = model(inputs)
+                
 
                 loss = loss_fn(logits, labels)
 
@@ -268,10 +275,11 @@ if __name__ == '__main__':
                     inputs_np = torch.clone(inputs).detach().cpu().permute(0, 2, 3, 1).numpy()
                     inputs_np = MaskBaseDataset.denormalize_image(inputs_np, dataset.mean, dataset.std)
                     figure = grid_image(inputs_np, labels, pred, n=25, shuffle=True) # 16
-            top1 = correct / count
+            if count !=0 : 
+                top1 = correct / count
         print(f'Val acc at epoch {epoch+1}: {100*top1:.2f}')
 
-        if (epoch+1) % 5 == 0 and (epoch+1) != 5 and (epoch+1) != 10:
+        if (epoch+1) % 5 == 0 and (epoch+1) != 5:
             model_path = os.path.join(args.model_location, f'{args.name}{args.i}_epoch{epoch+1}.pt')
             print('Saving model to', model_path)
             torch.save(model.module.state_dict(), model_path)
