@@ -242,7 +242,7 @@ class MaskBaseDataset(Dataset):
         img_cp += mean
         img_cp *= 255.0
         img_cp = np.clip(img_cp, 0, 255).astype(np.uint8)
-        return 
+        return img_cp
         
     def getSubset(self, indices) -> Subset:
         if indices is None:
@@ -320,7 +320,7 @@ class MaskBaseDataset(Dataset):
     #     self.transform = None
     #     self.test_loader = None
 
-def get_transforms(need=('train', 'val'), img_size=(224, 224)):
+def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
     """
     train 혹은 validation의 augmentation 함수를 정의합니다. train은 데이터에 많은 변형을 주어야하지만, validation에는 최소한의 전처리만 주어져야합니다.
     

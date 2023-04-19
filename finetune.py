@@ -124,9 +124,6 @@ if __name__ == '__main__':
     train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
     train_set1.dataset = copy.deepcopy(dataset)
 
-    # print("train_set[0]", train_set[0])
-    # print("val_set[0]", val_set[0])
-
     need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
 
     train_set2 = dataset.getSubset(need_change_idxs)
@@ -207,7 +204,8 @@ if __name__ == '__main__':
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
-                    "criterion_name" : loss_fn})
+                    "criterion_name" : loss_fn},
+                    project="old_data_aug")
 
     for epoch in range(args.epochs):
         # Train
