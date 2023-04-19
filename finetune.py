@@ -39,7 +39,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=256,
+        default=128,
     )
     parser.add_argument(
         "--custom-template", action="store_true", default=False,
@@ -52,7 +52,7 @@ def parse_arguments():
     parser.add_argument(
         "--epochs",
         type=int,
-        default=10,
+        default=20,
     )
     parser.add_argument(
         "--warmup-length",
@@ -62,7 +62,7 @@ def parse_arguments():
     parser.add_argument(
         "--lr",
         type=float,
-        default=2e-5, ## 0.00002
+        default=1e-5, ## 0.00001
     )
     parser.add_argument(
         "--wd",
@@ -128,6 +128,8 @@ if __name__ == '__main__':
 
     # Augmentation
     transform = get_transforms()
+    train_set.dataset.set_transform(transform['train'])
+    val_set.dataset.set_transform(transform['val'])
 
     ## 이미지 저장
     # image_data = np.transpose(train_set[0][0], (1, 2, 0))
