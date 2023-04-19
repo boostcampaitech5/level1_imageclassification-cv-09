@@ -242,7 +242,13 @@ class MaskBaseDataset(Dataset):
         img_cp += mean
         img_cp *= 255.0
         img_cp = np.clip(img_cp, 0, 255).astype(np.uint8)
-        return img_cp
+        return 
+        
+    def getSubset(self, indices) -> Subset:
+        if indices is None:
+            indices = None
+        subset = Subset(self, indices)
+        return subset
 
     def split_dataset(self, val_ratio=0.2, random_seed=42) -> Tuple[Subset, Subset]:
         """
@@ -337,6 +343,18 @@ def get_transforms(need=('train', 'val'), img_size=(224, 224)):
             Resize(img_size[0], img_size[1], p=1.0),
             #Sharpen(p=0.5),
             # HorizontalFlip(p=0.5),
+            # ShiftScaleRotate(p=0.5),
+            # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
+            # RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
+            # GaussNoise(p=0.5),
+            Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
+            ToTensorV2(p=1.0),
+        ], p=1.0)
+    if 'train2' in need:
+        transformations['train2'] = Compose([
+            # CenterCrop(height=412, width=384),
+            Resize(img_size[0], img_size[1], p=1.0),
+            HorizontalFlip(p=1.0),
             # ShiftScaleRotate(p=0.5),
             # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
             # RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
