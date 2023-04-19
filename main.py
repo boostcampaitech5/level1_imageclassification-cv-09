@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import random
 
-from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
+# from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
 from datasets.maskbasedataset import MaskBaseDataset
 from utils import get_model_from_sd, test_model_on_dataset
 
