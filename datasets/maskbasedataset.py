@@ -69,9 +69,9 @@ class AgeLabels(int, Enum):
         except Exception:
             raise ValueError(f"Age value should be numeric, {value}")
 
-        if value < 30:
+        if value < 29:
             return cls.YOUNG
-        elif value < 60:
+        elif value < 59:
             return cls.MIDDLE
         else:
             return cls.OLD
@@ -327,25 +327,27 @@ def get_transforms(need=('train', 'val'), img_size=(224, 224)):
     Returns:
         transformations: Augmentation 함수들이 저장된 dictionary 입니다. transformations['train']은 train 데이터에 대한 augmentation 함수가 있습니다.
     """
-    mean=(0.548, 0.504, 0.479)
-    std=(0.237, 0.247, 0.246)
+    mean=(0.56019265, 0.52410305, 0.50145299)
+    std=(0.23308824, 0.24294489, 0.2456003)
 
     transformations = {}
     if 'train' in need:
         transformations['train'] = Compose([
             # CenterCrop(height=412, width=384),
             Resize(img_size[0], img_size[1], p=1.0),
-            HorizontalFlip(p=0.5),
+            #Sharpen(p=0.5),
+            # HorizontalFlip(p=0.5),
             # ShiftScaleRotate(p=0.5),
-            HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
-            RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
-            GaussNoise(p=0.5),
+            # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
+            # RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
+            # GaussNoise(p=0.5),
             Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
             ToTensorV2(p=1.0),
         ], p=1.0)
     if 'val' in need:
         transformations['val'] = Compose([
             Resize(img_size[0], img_size[1]),
+            #Sharpen(p=0.5),
             Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
             ToTensorV2(p=1.0),
         ], p=1.0)
@@ -353,7 +355,7 @@ def get_transforms(need=('train', 'val'), img_size=(224, 224)):
 
 
 class TestDataset(Dataset):
-    def __init__(self, img_paths, resize, mean=(0.548, 0.504, 0.479), std=(0.237, 0.247, 0.246)):
+    def __init__(self, img_paths, resize, mean=(0.56019265, 0.52410305, 0.50145299), std=(0.23308824, 0.24294489, 0.2456003)):
         self.img_paths = img_paths
         self.transform = torchvision.transforms.Compose([
             torchvision.transforms.Resize(resize, Image.BILINEAR),
