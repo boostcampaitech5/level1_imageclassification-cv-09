@@ -123,11 +123,12 @@ if __name__ == '__main__':
     # Data Load
     train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
     train_set.dataset = copy.deepcopy(dataset)
-    # print("train_set[0]", train_set[0])
-    # print("val_set[0]", val_set[0])
 
     # Augmentation
     transform = get_transforms()
+
+    train_set.dataset.set_transform(transform['train'])
+    val_set.dataset.set_transform(transform['val'])
 
     ## 이미지 저장
     # image_data = np.transpose(train_set[0][0], (1, 2, 0))
@@ -137,8 +138,8 @@ if __name__ == '__main__':
     # print(image_data.shape)
     # img_pil = TF.to_pil_image(image_data)
     # img_pil.save('temp/train_set[0][0]_centorcrop.png')
-
     # exit()
+
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -269,7 +270,7 @@ if __name__ == '__main__':
             top1 = correct / count
         print(f'Val acc at epoch {epoch+1}: {100*top1:.2f}')
 
-        if (epoch+1) % 5 == 0 :
+        if (epoch+1) % 5 == 0 and (epoch+1) != 5:
             model_path = os.path.join(args.model_location, f'{args.name}{args.i}_epoch{epoch+1}.pt')
             print('Saving model to', model_path)
             torch.save(model.module.state_dict(), model_path)
