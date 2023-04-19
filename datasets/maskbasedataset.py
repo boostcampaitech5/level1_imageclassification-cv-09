@@ -81,13 +81,37 @@ class AgeLabels(int, Enum):
         except Exception:
             raise ValueError(f"Age value should be numeric, {value}")
 
-        if value < 30:
+        if value < 29:
             return cls.YOUNG
         elif value < 59:
             return cls.MIDDLE
         else:
             return cls.OLD
 
+<<<<<<< HEAD
+=======
+def change_sex(gender):
+    if gender == 'male':
+        return 'female'
+    else:
+        return 'male'
+    
+def change_incorrect_normal(file_name):
+    if file_name == 'normal':
+        return MaskLabels.INCORRECT
+    elif file_name == 'incorrect_mask':
+        return MaskLabels.NORMAL
+    else:
+        return MaskLabels.MASK
+    
+def change_incorrect_to_mask(file_name):
+    if file_name == 'incorrect_mask':
+        return MaskLabels.MASK
+    elif file_name == 'normal':
+        return MaskLabels.NORMAL
+    else:
+        return MaskLabels.MASK
+>>>>>>> 2f0f1b4a26887b91f8e10766b80295f04cd7dc2b
 
 class MaskBaseDataset(Dataset):
     num_classes = 3 * 2 * 3
@@ -117,7 +141,7 @@ class MaskBaseDataset(Dataset):
         self.gender_labels = []
         self.age_labels = []
 
-        self.data_dir = data_dir
+        self.data_dir = data_dir        # '/opt/ml/input/data/train/images' -> 폴더명 ex) 000001_female_Asian_45
         self.mean = mean
         self.std = std
         self.val_ratio = val_ratio
@@ -150,6 +174,18 @@ class MaskBaseDataset(Dataset):
                 mask_label = self._file_names[_file_name]
 
                 id, gender, race, age = profile.split("_")
+                
+                if id == '004418' or id == '005227' or id == '000020':
+                    mask_label = change_incorrect_normal(_file_name)
+                    
+                if id == '003574' or id == '000645':
+                    mask_label = change_incorrect_to_mask(_file_name)
+                
+                if id == '001200' or id == '004432' or id == '005223' or id == '001498-1' or \
+                id == '000725' or id == '006359' or id == '006360' or id == '006361' or \
+                id == '006362' or id == '006363' or id == '006364':
+                    gender = change_sex(gender)
+                    
                 gender_label = GenderLabels.from_str(gender)
                 age_label = AgeLabels.from_number(age)
 
@@ -319,6 +355,7 @@ def get_transforms(need=("train", "val"), img_size=(224, 224)):
     Returns:
         transformations: Augmentation 함수들이 저장된 dictionary 입니다. transformations['train']은 train 데이터에 대한 augmentation 함수가 있습니다.
     """
+<<<<<<< HEAD
     mean = (0.548, 0.504, 0.479)
     std = (0.237, 0.247, 0.246)
 
@@ -351,13 +388,43 @@ def get_transforms(need=("train", "val"), img_size=(224, 224)):
             ],
             p=1.0,
         )
+=======
+    mean=(0.56019265, 0.52410305, 0.50145299)
+    std=(0.23308824, 0.24294489, 0.2456003)
+
+    transformations = {}
+    if 'train' in need:
+        transformations['train'] = Compose([
+            # CenterCrop(height=412, width=384),
+            Resize(img_size[0], img_size[1], p=1.0),
+            #Sharpen(p=0.5),
+            # HorizontalFlip(p=0.5),
+            # ShiftScaleRotate(p=0.5),
+            # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
+            # RandomBrightnessContrast(brightness_limit=(-0.1, 0.1), contrast_limit=(-0.1, 0.1), p=0.5),
+            # GaussNoise(p=0.5),
+            Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
+            ToTensorV2(p=1.0),
+        ], p=1.0)
+    if 'val' in need:
+        transformations['val'] = Compose([
+            Resize(img_size[0], img_size[1]),
+            #Sharpen(p=0.5),
+            Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
+            ToTensorV2(p=1.0),
+        ], p=1.0)
+>>>>>>> 2f0f1b4a26887b91f8e10766b80295f04cd7dc2b
     return transformations
 
 
 class TestDataset(Dataset):
+<<<<<<< HEAD
     def __init__(
         self, img_paths, resize, mean=(0.548, 0.504, 0.479), std=(0.237, 0.247, 0.246)
     ):
+=======
+    def __init__(self, img_paths, resize, mean=(0.56019265, 0.52410305, 0.50145299), std=(0.23308824, 0.24294489, 0.2456003)):
+>>>>>>> 2f0f1b4a26887b91f8e10766b80295f04cd7dc2b
         self.img_paths = img_paths
         self.transform = torchvision.transforms.Compose(
             [
