@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
-from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms
+from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, AgeDataset
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
 from zeroshot import zeroshot_classifier
 import torchvision.transforms.functional as TF
@@ -22,6 +22,7 @@ import copy
 
 #############입력하세요#############
 model_name = 'jitterflip_seed340_epoch20.pt'
+model_name_age = 'onlyAge_jitterflip_seed340_epoch20.pt'
 ###################################
 
 def parse_arguments():
@@ -115,8 +116,7 @@ def grid_image(np_images, gts, preds, is_wrong, n=16):
 
     return figure
 
-def load_model(saved_model, num_classes, device):
-    model_path = os.path.join('/opt/ml/model-soups/model', model_name)
+def load_model(model_path, device):
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
     print('model_path', model_path)
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
@@ -129,10 +129,12 @@ if __name__ == '__main__':
     args = parse_arguments()
     DEVICE = 'cuda'
 
-    NUM_CLASSES = 18
     
     model_path = os.path.join(args.model_location, model_name) 
-    model = load_model(model_path, NUM_CLASSES, 'cuda').to('cuda')
+    model = load_model(model_path, 'cuda').to('cuda')
+    
+    model_path_age = os.path.join(args.model_location, model_name_age) 
+    model_age = load_model(model_path_age, 'cuda').to('cuda')
 
     if args.random_seed != -1 : 
         torch.manual_seed(args.random_seed)
@@ -147,18 +149,28 @@ if __name__ == '__main__':
         data_dir='/opt/ml/input/data/train/images'
     )
 
+    
+    dataset_age = AgeDataset(
+        data_dir='/opt/ml/input/data/train/images'
+    )
+
     # Data Load
     _, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+    _, val_set_age= dataset_age.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
 
     # Augmentation
     transform = get_transforms()
     val_set.dataset.set_transform(transform['val'])
+
+    transform_age = get_transforms()
+    val_set_age.dataset.set_transform(transform_age['val'])
 
     
     classes = [0 for _ in range(3*2*3)]
     mask_cls = [0 for _ in range(3)]
     gender_cls = [0 for _ in range(2)]
     age_cls = [0 for _ in range(3)]
+    age_cls_age = [0 for _ in range(3)]
 
     ## 전체 val dataset의 클래스별 분류
     for i in range(len(val_set)):
@@ -169,6 +181,10 @@ if __name__ == '__main__':
         age_cls[age_label] +=1
         classes[multi_class_label] += 1
 
+    for i in range(len(val_set_age)):
+        _, age_label =  val_set_age[i]
+        age_cls_age[age_label] +=1
+
     val_loader = torch.utils.data.DataLoader(
         val_set,
         batch_size=args.batch_size,
@@ -177,17 +193,31 @@ if __name__ == '__main__':
         pin_memory=True,
         drop_last=True,
     )
-
+    
+    val_loader_age = torch.utils.data.DataLoader(
+        val_set_age,
+        batch_size=args.batch_size,
+        num_workers=args.workers,
+        shuffle=False,
+        pin_memory=True,
+        drop_last=True,
+    )
 
     for p in model.parameters():
         p.data = p.data.float()
+    for p in model_age.parameters():
+        p.data = p.data.float()
 
     model = model.cuda()
+    model_age = model_age.cuda()
     devices = [x for x in range(torch.cuda.device_count())]
     model = torch.nn.DataParallel(model,  device_ids=devices)
+    model_age = torch.nn.DataParallel(model_age,  device_ids=devices)
 
     model_parameters = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(model_parameters, lr=args.lr, weight_decay=args.wd)
+    model_parameters_age = [p for p in model_age.parameters() if p.requires_grad]
+    optimizer_age = torch.optim.AdamW(model_parameters_age, lr=args.lr, weight_decay=args.wd)
 
     loss_fn = torch.nn.CrossEntropyLoss()
 
@@ -199,7 +229,10 @@ if __name__ == '__main__':
 
     # #Evaluate
     test_loader = val_loader
+    
+    test_loader_age = val_loader_age
     model.eval()
+    model_age.eval()
 
     wrong_imgs = None
     with torch.no_grad():
@@ -207,13 +240,46 @@ if __name__ == '__main__':
         print('Starting eval')
         correct, count = 0.0, 0.0
         pbar = tqdm(test_loader)
-        for i, batch in enumerate(pbar):
+        pbar_age = tqdm(test_loader_age)
+        for i, (batch, batch_age) in enumerate(zip(pbar, pbar_age)):
             batch = maybe_dictionarize_batch(batch)
+            batch_age = maybe_dictionarize_batch(batch_age)
+
             inputs, labels = batch['images'].to(DEVICE), batch['labels'].to(DEVICE)
+            inputs_age, labels_age = batch_age['images'].to(DEVICE), batch_age['labels'].to(DEVICE)
 
             logits = model(inputs)
+            logits_age = model_age(inputs_age)
+
+
+            
+            # print('before logit', logits[0])
+            # print('before logits_age', logits_age[0])
+            # print('before labels', labels[0])
+
+            for i in range(len(logits)): 
+                
+                age1_percent = 1. + logits_age[i][0] / logits_age[i].sum()
+                age2_percent = 1. + logits_age[i][1] / logits_age[i].sum()
+                age3_percent = 1. + logits_age[i][2] / logits_age[i].sum()
+                
+                age_percent = torch.tensor([age1_percent, age2_percent, age3_percent,
+                    age1_percent, age2_percent, age3_percent,
+                    age1_percent, age2_percent, age3_percent,
+                    age1_percent, age2_percent, age3_percent,
+                    age1_percent, age2_percent, age3_percent,
+                    age1_percent, age2_percent, age3_percent] , device='cuda')
+
+                logits[i] *= age_percent
 
             loss = loss_fn(logits, labels)
+            loss_age = loss_fn(logits_age, labels_age)
+
+
+            # print('logit', logits[0])
+            # print('logits_age', logits_age[0])
+            # print('labels', labels[0])
+
 
             pred = logits.argmax(dim=1, keepdim=True)
             correct += pred.eq(labels.view_as(pred)).sum().item()
