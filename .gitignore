@@ -133,3 +133,4 @@ dmypy.json
 wandb/
 model/
 output/
+val_img/
