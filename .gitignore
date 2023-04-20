@@ -134,3 +134,4 @@ wandb/
 model/
 output/
 val_img/
+logs/

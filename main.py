@@ -28,7 +28,7 @@ def parse_arguments():
     parser.add_argument(
         "--model-location",
         type=str,
-        default=os.path.expanduser('/opt/ml/model-soups/model'),
+        default=os.path.expanduser('/opt/ml/level1_imageclassification-cv-09/model'),
         help="Where to download the models.",
     )
     parser.add_argument(
@@ -49,7 +49,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=256,
+        default=128,
     )
     parser.add_argument(
         "--workers",
@@ -60,7 +60,7 @@ def parse_arguments():
     parser.add_argument(
         "--random-seed", 
         type=int,
-        default=42,
+        default=48,
     )
     parser.add_argument(
         "--name",
@@ -72,8 +72,8 @@ if __name__ == '__main__':
     args = parse_arguments()
 
     ###############입력하세요##############
-    NUM_MODELS = 40
-    epoch = 10
+    NUM_MODELS = 16
+    epoch = 20
     val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
     ######################################
     
