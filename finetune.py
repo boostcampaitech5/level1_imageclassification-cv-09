@@ -39,7 +39,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=128,
+        default=64,
     )
     parser.add_argument(
         "--custom-template", action="store_true", default=False,
@@ -91,7 +91,7 @@ def parse_arguments():
     parser.add_argument(
         "--i",
         type=int,
-        default=0,
+        default=4,
     )
 
     return parser.parse_args()
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     val_set.dataset.set_transform(transform['val'])
 
     train_set2.dataset.set_transform(transform['train2'])
+
     ## 이미지 저장
     # image_data = np.transpose(train_set[0][0], (1, 2, 0))
     # mean=(0.548, 0.504, 0.479)

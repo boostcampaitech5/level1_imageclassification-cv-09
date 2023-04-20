@@ -341,7 +341,8 @@ def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
         transformations['train'] = Compose([
             # CenterCrop(height=412, width=384),
             Resize(img_size[0], img_size[1], p=1.0),
-            #Sharpen(p=0.5),
+            # Sharpen(p=0.5),
+            # ColorJitter(p=0.5, hue=0),
             # HorizontalFlip(p=0.5),
             # ShiftScaleRotate(p=0.5),
             # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
