@@ -21,7 +21,7 @@ import copy
 
 
 #############입력하세요#############
-model_name = "normal1_epoch20.pt"
+model_name = "old_data24_epoch20.pt"
 ###################################
 
 def parse_arguments():
