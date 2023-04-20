@@ -51,7 +51,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=128,
+        default=256,
     )
     parser.add_argument(
         "--custom-template",
@@ -66,7 +66,7 @@ def parse_arguments():
     parser.add_argument(
         "--epochs",
         type=int,
-        default=20,
+        default=10,
     )
     parser.add_argument(
         "--warmup-length",
@@ -76,11 +76,7 @@ def parse_arguments():
     parser.add_argument(
         "--lr",
         type=float,
-<<<<<<< HEAD
         default=2e-5,  ## 0.00002
-=======
-        default=1e-5, ## 0.00001
->>>>>>> 2f0f1b4a26887b91f8e10766b80295f04cd7dc2b
     )
     parser.add_argument(
         "--wd",
@@ -147,8 +143,6 @@ if __name__ == "__main__":
 
     # Augmentation
     transform = get_transforms()
-    train_set.dataset.set_transform(transform['train'])
-    val_set.dataset.set_transform(transform['val'])
 
     # 클래스별 인덱스 리스트 생성
     # class_indices = {}
@@ -305,7 +299,7 @@ if __name__ == "__main__":
                 )
                 correct, count = 0.0, 0.0
 
-        # #Evaluate
+        # Evaluate
         test_loader = val_loader
         model.eval()
         with torch.no_grad():
