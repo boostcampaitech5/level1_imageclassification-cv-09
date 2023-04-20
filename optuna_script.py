@@ -272,6 +272,9 @@ if __name__ == "__main__":
     print(study.best_value)
 
     # Optuna 시각화 plot 저장
+    """
+    TODO : 아래 사진 저장되는 경로 수정
+    """
     fig = optuna.visualization.plot_optimization_history(study)
     fig.write_image("/opt/ml/workspace/optuna_images/optuna_history.png")
     fig = optuna.visualization.plot_param_importances(study)
