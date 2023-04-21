@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     ###############입력하세요##############
     NUM_MODELS = 40
-    epoch = 10
+    epoch = 20
     val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
     ######################################
     
@@ -117,7 +117,6 @@ if __name__ == '__main__':
         for j, model_path in enumerate(model_paths):
             # assert os.path.exists(model_path)
             state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-            
 
             model = get_model_from_sd(state_dict, base_model)
 
@@ -130,7 +129,7 @@ if __name__ == '__main__':
                 print(f'Evaluating model {j} of {NUM_MODELS - 1} on {dataset_cls.__name__}.')
 
                 # dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
-                dataset = dataset_cls(batch_size=args.batch_size, val_ratio=val_ratio)
+                dataset = dataset_cls(batch_size=args.batch_size, val_ratio=val_ratio, random_seed=args.random_seed)
                 accuracy = test_model_on_dataset(model, dataset)
                 results[dataset_cls.__name__] = accuracy
                 print(accuracy)
@@ -191,7 +190,7 @@ if __name__ == '__main__':
         greedy_soup_params = torch.load(os.path.join(args.model_location, f'{sorted_models[0]}.pt'))
         best_val_acc_so_far = individual_model_val_accs[0][1]
         # held_out_val_set = ImageNet2p(preprocess, args.data_location, args.batch_size, args.workers)
-        held_out_val_set = MaskBaseDataset(batch_size=256)
+        held_out_val_set = MaskBaseDataset(batch_size=args.batch_size, random_seed=args.random_seed)
 
         # Now, iterate through all models and consider adding them to the greedy soup.
         for i in range(1, NUM_MODELS):
