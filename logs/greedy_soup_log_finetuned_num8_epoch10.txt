@@ -1,0 +1,7 @@
+Potential greedy soup val acc 0.974609375, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.9740513392857143, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.9740513392857143, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.974609375, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.9720982142857143, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.9720982142857143, best so far 0.9760044642857141.
+Potential greedy soup val acc 0.7003348214285714, best so far 0.9760044642857141.

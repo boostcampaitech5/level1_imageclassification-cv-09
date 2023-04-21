@@ -13,8 +13,8 @@ import math
 # from utils import get_model_from_sd
 
 ###############입력하세요##############
-model_name = 'jitterflip_seed340_epoch20.pt'
-model_name_age = 'onlyAge_jitterflip_seed340_epoch20.pt'
+model_name = 'jitterflip_seed34_epoch20_greedysoup_num40.pt'
+model_name2 = 'jitterflip_seed48_epoch15_greedysoup_num16.pt'
 ######################################
 
 def load_model(model_name, device):
@@ -35,9 +35,9 @@ def inference(data_dir, model_dir, output_dir, args):
     device = torch.device("cuda" if use_cuda else "cpu")
 
     model = load_model(model_name, device).to(device)
-    model_age = load_model(model_name_age, device).to(device)
+    model2 = load_model(model_name2, device).to(device)
     model.eval()
-    model_age.eval()
+    model2.eval()
 
     img_root = os.path.join(data_dir, 'images')
     info_path = os.path.join(data_dir, 'info.csv')
@@ -61,22 +61,16 @@ def inference(data_dir, model_dir, output_dir, args):
             images = images.to(device)
 
             pred = model(images)
-            pred_age = model_age(images)
+            pred2 = model2(images)
+
 
             for i in range(len(pred)): 
                 
-                age1_percent = 1. + pred_age[i][0] / pred_age[i].sum()
-                age2_percent = 1. + pred_age[i][1] / pred_age[i].sum()
-                age3_percent = 1. + pred_age[i][2] / pred_age[i].sum()
-                
-                age_percent = torch.tensor([age1_percent, age2_percent, age3_percent,
-                    age1_percent, age2_percent, age3_percent,
-                    age1_percent, age2_percent, age3_percent,
-                    age1_percent, age2_percent, age3_percent,
-                    age1_percent, age2_percent, age3_percent,
-                    age1_percent, age2_percent, age3_percent] , device='cuda')
+                pred[i] = (pred[i] - pred[i].min()) / (pred[i].max() - pred[i].min())
+                pred2[i] = (pred2[i] - pred2[i].min()) / (pred2[i].max() - pred2[i].min())
 
-                pred[i] *= age_percent
+                pred[i] += pred2[i]
+
 
             pred = pred.argmax(dim=-1)
             preds.extend(pred.cpu().numpy())
