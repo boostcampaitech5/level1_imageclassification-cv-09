@@ -14,7 +14,10 @@
 
 
 해당 프로젝트 repository에서 참고한 reference 목록입니다.
-[Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
+
+Model soups : [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
+
+ViT : [https://github.com/google-research/vision_transformer]
 
 
 ## Code
