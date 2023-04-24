@@ -1,71 +1,108 @@
-# [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482)
+# 안녕하세요! 👨‍👨‍👦‍👦
 
-This repository contains code for the paper [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
+네이버 부스트캠프 AItech 5기 CV_9팀 level-1(image classification) 프로젝트 공간입니다.
 
-Using this repository you can reproduce the figure below, which shows that model soups (averaging multiple fine-tuned solutions) can outperform
-the best individual model.
-As an alternative to this repository, [Cade Gordon](http://cadegordon.io/) has made the following [colab notebook](https://colab.research.google.com/drive/1UmK-phTRXC4HoKb7_rScawnRqlG82svF?usp=sharing) to explore model soups on CIFAR10.
-<p align="center">
-<img src="figure.png", width="625"/>
-</p>
+![image](https://user-images.githubusercontent.com/72616557/228166051-e8197cb8-0025-485d-becc-cba4a5c257fd.png)
 
 
-## Code
 
-There are 5 steps to reproduced the figure above: 1) downloading the models, 2) evaluating the individual models, 3) running the uniform soup, 4) running the greedy soup, and 5) making the plot.
+## Contributors
 
-Note that any of these steps can be skipped, i.e, you can immediately generate the plot above via `python main.py --plot`.
-You can also run the greedy soup without evaluating the individual models.
-This is because we have already completed all of the steps and saved the results files in this repository (i.e., `individual_model_results.jsonl`).
-If you do decide to rerun a step, the corresponding results file or plot is deleted and regenerated.
+|신현준 |                                                  한현민|정현석 |                                                  김지범|오유림|
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| [<img src="https://avatars.githubusercontent.com/u/113486402?s=400&v=4" alt="" style="width:100px;100px;">](https://github.com/june95) <br/> | [<img src="https://avatars.githubusercontent.com/u/33598545?s=400&u=d0aaa9e96fd2fa1d0c1aa034d8e9e2c8daf96473&v=4" alt="" style="width:100px;100px;">](https://github.com/Hyunmin-H) <br/> | [<img src="https://avatars.githubusercontent.com/u/72616557?v=4" alt="" style="width:100px;100px;">](https://github.com/hyuns66) <br/> | [<img src="https://avatars.githubusercontent.com/u/91449518?v=4" alt="" style="width:100px;100px;">](https://github.com/jibeomkim7) <br/> |[<img src="https://avatars.githubusercontent.com/u/63313306?s=400&u=094cba544d8029b4f93aa191d036a109d6265fa8&v=4" alt="" style="width:100px;100px;">](https://github.com/jennifer060697) <br/> |
 
-The exception is step 1, downloading the models. If you wish to run steps 2, 3, or 4 you must first run step 1.
 
-### Install dependencies and downloading datasets
+해당 프로젝트 repository에서 참고한 reference 목록입니다.
 
-To install the dependencies either run the following code or see [environment.md](environment.md) for more information.
+Model soups : [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
+
+ViT : https://github.com/google-research/vision_transformer
+
+  
+## Setting Step
+### 1. 가상 환경 설치  
 ```bash
 conda env create -f environment.yml
 conda activate model_soups
 ```
-
-To download the datasets see [datasets.md](datasets.md). When required, set `--data-location` to the `$DATA_LOCATION` used in [datasets.md](datasets.md).
-
-### Step 1: Downloading the models
-
+### 2. 추가 패키지 설치
+- wandb, albumentations 등 추가 설치  
+### 3. pretrained model 다운로드  
 ```bash
-python main.py --download-models --model-location <where models will be stored>
+python main.py --download-models --model-location <where models will be stored>  
 ```
-This will store models to `--model-location`.
-
-
-### Step 2: Evaluate individual models
-
+  
+## 실행 Step  
+### 1. Fine Tuning
 ```bash
-python main.py --eval-individual-models --data-location <where data is stored> --model-location <where models are stored>
+python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 사이즈(ex:256)} --epochs {에폭 수(ex:10)} --random-seed {시드 설정}
 ```
-Note that this will first delete then rewrite the file `individual_model_results.jsonl`.
-
-### Step 3: Uniform soup
-
+- ImageNet 등을 이용하여 미리 학습한 모델 parameter를 이용하여, 우리의 데이터셋에 맞게 마지막 layer를 바꿔주고 학습하는 부분입니다.
+- 모델 number range는 0~71(72개 입니다.)  
+- 저장되는 모델 pt 파일명은 "모델명i_epochs10.pt"
+- 추가로 learning rate, data-location과 같은 argument들이 있으며, 모든 argument는 default 값을 finetune.py에서 설정할 수 있습니다.
+- Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 다음 명령어 실행
 ```bash
-python main.py --uniform-soup --data-location <where data is stored> --model-location <where models are stored>
+bash trining.sh
 ```
-Note that this will first delete then rewrite the file `uniform_soup_results.jsonl`.
 
-### Step 4. Greedy soup
-
+### 2. Individual Evaluation  
 ```bash
-python main.py --greedy-soup --data-location <where data is stored> --model-location <where models are stored>
+python main.py --eval-individual-models --name {모델명}
 ```
-Note that this will first delete then rewrite the file `greedy_soup_results.jsonl`.
+- finetune을 통해 만든 모델들의 accuracy를 측정하여 기록해두는 부분입니다.
+![image](https://user-images.githubusercontent.com/113486402/233948441-7bab18bc-37f8-424b-a0fb-3223a37781b8.png)
+- "입력하세요" 부분에 측정할 모델의 개수(NUM_MODELS), 사용할 epoch, val_ratio를 적어줍니다.
+- val_ratio에 None 값을 입력하면, 전체 dataset에 대해 evaludation을 진행합니다. 
+- finetune 당시에 random-seed를 설정해주었다면, None값을 넣어주면 안됩니다.
+- 실행 결과로 logs 폴더 안에 각 모델의 accuracy가 적힌 jsonl 파일이 생성됩니다. 
 
-### Step 5. Plot
-
+### 3. Greedy Soup
 ```bash
-python main.py --plot
+python main.py --greedy-soup --name {모델명}
+```  
+- individual Evaluation에서 저장한 여러 모델의 accuracy정보를 내림차순으로 정렬합니다.  
+- 정렬 기준으로 좋은 성능을 내는 모델들을 순서대로 불러와 greedy하게 조합하여(averaging) 더 좋은 성능을 내도록 하는 최종 모델을 생성합니다.
+- 실행 결과 model 폴더 안에 greedy 모델이 저장됩니다.
+- log 폴더 안에 변수 GREEDY_SOUP_LOG_FILE가 이름임 로그를 저장합니다. 해당 로그에는 averaging된 모델 정보가 저장됩니다.
+
+### 4. Inference
+```bash
+python inference.py
 ```
-Note that this will first delete then rewrite the file `figure.png`.
+- 생성한 모델 파일(.pt)를 이용하여 Test data를 예측하는 부분입니다.  
+- "입력하세요" 주석 내에 pt 파일명을 적고 실행시킵니다.   
+![image](https://user-images.githubusercontent.com/113486402/233952932-ea2967b4-a934-4238-a08f-7b1e85f6031d.png)
+- 최종 예측한 csv 파일이 output 폴더에 저장됩니다.
+
+  
+## 추가 모듈
+### 1. Relabeling  
+![image](https://user-images.githubusercontent.com/113486402/233954582-70a43065-7586-483e-abf5-707e744eebb3.png)  
+- relabeling이 필요한 id 목록을 list에 넣어서 relabel_dict 딕셔너리에 넣어주었습니다.
+- maskbasedataset.py에서 추가로 relabeling이 필요한 id가 있다면 간단하게 해당 list에 넣어주기만 하면 relabeling을 수행합니다.  
+
+### 2. Data oversampling  
+- 
+
+### 3. Wandb  
+- 
+
+### 4. Optuna  
+- 
+
+### 5. Hard voting (Ensemble)
+- 
+
+### 6. Contrastive learning  
+- 
+
+
+
+
+
+
 
 ### Note
 
