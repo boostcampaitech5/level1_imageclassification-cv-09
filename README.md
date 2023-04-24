@@ -42,11 +42,24 @@ python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 �
 - 모델 number range는 0~71(72개 입니다.)  
 - 저장되는 모델 pt 파일명은 "모델명i_epochs10.pt"
 - 추가로 learning rate, data-location과 같은 argument들이 있으며, 모든 argument는 default 값을 finetune.py에서 설정할 수 있습니다.
-- Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 
+- Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 다음 명령어 실행
 ```bash
 bash trining.sh
 ```
-실행
+
+2. Individual Evaluation  
+```bash
+python main.py --eval-individual-models --name {모델명}
+```
+- finetune을 통해 만든 모델들의 accuracy를 측정하여 기록해두는 부분입니다.
+![image](https://user-images.githubusercontent.com/113486402/233948441-7bab18bc-37f8-424b-a0fb-3223a37781b8.png)
+- "입력하세요" 부분에 측정할 모델의 개수(NUM_MODELS), 사용할 epoch, val_ratio를 적어줍니다.
+- val_ratio에 None 값을 입력하면, 전체 dataset에 대해 evaludation을 진행합니다. 
+- finetune 당시에 random-seed를 설정해주었다면, None값을 넣어주면 안됩니다.
+- 실행 결과로 logs 폴더 안에 각 모델의 accuracy가 적힌 jsonl 파일이 생성됩니다. 
+
+3. 
+
 
 ## Code
 
