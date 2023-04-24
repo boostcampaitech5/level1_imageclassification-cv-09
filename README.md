@@ -22,13 +22,31 @@ ViT : https://github.com/google-research/vision_transformer
 
 ## Setting Step
 1. 가상 환경 설치  
-- conda env create -f environment.yml
-conda activate model_soups  
+```bash
+conda env create -f environment.yml
+conda activate model_soups
+```
 2. 추가 패키지 설치
 - wandb, albumentations 등 추가 설치  
 3. pretrained model 다운로드  
-- python main.py --download-models --model-location <where models will be stored>  
- 
+```bash
+python main.py --download-models --model-location <where models will be stored>  
+```
+
+## 실행 Step  
+1. Fine Tuning
+```bash
+python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 사이즈(ex:256)} --epochs {에폭 수(ex:10)} --random-seed {시드 설정}
+```
+- ImageNet 등을 이용하여 미리 학습한 모델 parameter를 이용하여, 우리의 데이터셋에 맞게 마지막 layer를 바꿔주고 학습하는 부분입니다.
+- 모델 number range는 0~71(72개 입니다.)  
+- 저장되는 모델 pt 파일명은 "모델명i_epochs10.pt"
+- 추가로 learning rate, data-location과 같은 argument들이 있으며, 모든 argument는 default 값을 finetune.py에서 설정할 수 있습니다.
+- Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 
+```bash
+bash trining.sh
+```
+실행
 
 ## Code
 
