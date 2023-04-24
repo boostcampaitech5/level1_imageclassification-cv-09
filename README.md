@@ -17,8 +17,18 @@
 
 Model soups : [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
 
-ViT : [https://github.com/google-research/vision_transformer]
+ViT : https://github.com/google-research/vision_transformer
 
+
+## Setting Step
+1. 가상 환경 설치  
+- conda env create -f environment.yml
+- conda activate model_soups  
+2. 추가 패키지 설치
+- wandb, albumentations 등 추가 설치  
+3. pretrained model 다운로드  
+- python main.py --download-models --model-location <where models will be stored>
+ 
 
 ## Code
 
