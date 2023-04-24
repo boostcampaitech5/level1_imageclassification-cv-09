@@ -72,7 +72,7 @@ python main.py --greedy-soup --name {모델명}
 python inference.py
 ```
 - 생성한 모델 파일(.pt)를 이용하여 Test data를 예측하는 부분입니다.  
-- "입력하세요" 주석 내에 pt 파일명을 적고 실행시킵니다. 
+- "입력하세요" 주석 내에 pt 파일명을 적고 실행시킵니다.   
 ![image](https://user-images.githubusercontent.com/113486402/233952932-ea2967b4-a934-4238-a08f-7b1e85f6031d.png)
 - 최종 예측한 csv 파일이 output 폴더에 저장됩니다.
 
