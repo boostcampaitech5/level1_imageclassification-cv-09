@@ -21,20 +21,20 @@ ViT : https://github.com/google-research/vision_transformer
 
 
 ## Setting Step
-##1. 가상 환경 설치  
+### 1. 가상 환경 설치  
 ```bash
 conda env create -f environment.yml
 conda activate model_soups
 ```
-##2. 추가 패키지 설치
+### 2. 추가 패키지 설치
 - wandb, albumentations 등 추가 설치  
-##3. pretrained model 다운로드  
+### 3. pretrained model 다운로드  
 ```bash
 python main.py --download-models --model-location <where models will be stored>  
 ```
 
 ## 실행 Step  
-##1. Fine Tuning
+### 1. Fine Tuning
 ```bash
 python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 사이즈(ex:256)} --epochs {에폭 수(ex:10)} --random-seed {시드 설정}
 ```
@@ -47,7 +47,7 @@ python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 �
 bash trining.sh
 ```
 
-##2. Individual Evaluation  
+### 2. Individual Evaluation  
 ```bash
 python main.py --eval-individual-models --name {모델명}
 ```
@@ -58,7 +58,7 @@ python main.py --eval-individual-models --name {모델명}
 - finetune 당시에 random-seed를 설정해주었다면, None값을 넣어주면 안됩니다.
 - 실행 결과로 logs 폴더 안에 각 모델의 accuracy가 적힌 jsonl 파일이 생성됩니다. 
 
-##3. Greedy Soup
+### 3. Greedy Soup
 ```bash
 python main.py --greedy-soup --name {모델명}
 ```  
