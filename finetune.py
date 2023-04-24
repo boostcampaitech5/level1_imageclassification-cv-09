@@ -16,7 +16,7 @@ import copy
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
-from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms, grid_image
+from datasets.maskbasedataset import MaskBaseDataset, get_transforms, grid_image
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd, get_model_from_sd_modified
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
