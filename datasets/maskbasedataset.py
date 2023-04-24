@@ -245,6 +245,9 @@ class MaskBaseDataset(Dataset):
         return img_cp
         
     def getSubset(self, indices) -> Subset:
+        """
+        전체 데이터셋에서 원하는 인덱스 부분만 데이터셋의 서브셋으로 추출
+        """
         if indices is None:
             indices = None
         subset = Subset(self, indices)
@@ -351,7 +354,7 @@ def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
             Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
             ToTensorV2(p=1.0),
         ], p=1.0)
-    if 'train2' in need:
+    if 'train2' in need:        #추가 데이터셋을 위한 증강시 이용하는 transform
         transformations['train2'] = Compose([
             # CenterCrop(height=412, width=384),
             Resize(img_size[0], img_size[1], p=1.0),
