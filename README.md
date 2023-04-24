@@ -1,6 +1,6 @@
 # 안녕하세요! 👨‍👨‍👦‍👦
 
-네이버 부스트캠프 AItech 5기 CV_9팀 프로젝트 공간입니다.
+네이버 부스트캠프 AItech 5기 CV_9팀 level-1(image classification) 프로젝트 공간입니다.
 
 ![image](https://user-images.githubusercontent.com/72616557/228166051-e8197cb8-0025-485d-becc-cba4a5c257fd.png)
 
