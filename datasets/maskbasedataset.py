@@ -13,6 +13,7 @@ import torch
 import random
 from typing import Tuple, List
 import torchvision
+from collections import defaultdict
 
 IMG_EXTENSIONS = [
     ".jpg", ".JPG", ".jpeg", ".JPEG", ".png",
