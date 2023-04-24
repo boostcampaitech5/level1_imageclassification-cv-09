@@ -19,7 +19,7 @@ Model soups : [Model soups: averaging weights of multiple fine-tuned models impr
 
 ViT : https://github.com/google-research/vision_transformer
 
-
+  
 ## Setting Step
 ### 1. 가상 환경 설치  
 ```bash
@@ -32,7 +32,7 @@ conda activate model_soups
 ```bash
 python main.py --download-models --model-location <where models will be stored>  
 ```
-
+  
 ## 실행 Step  
 ### 1. Fine Tuning
 ```bash
@@ -76,63 +76,33 @@ python inference.py
 ![image](https://user-images.githubusercontent.com/113486402/233952932-ea2967b4-a934-4238-a08f-7b1e85f6031d.png)
 - 최종 예측한 csv 파일이 output 폴더에 저장됩니다.
 
+  
+## 추가 모듈
+### 1. Relabeling  
+![image](https://user-images.githubusercontent.com/113486402/233954582-70a43065-7586-483e-abf5-707e744eebb3.png)  
+- relabeling이 필요한 id 목록을 list에 넣어서 relabel_dict 딕셔너리에 넣어주었습니다.
+- maskbasedataset.py에서 추가로 relabeling이 필요한 id가 있다면 간단하게 해당 list에 넣어주기만 하면 relabeling을 수행합니다.  
 
-## Code
+### 2. Data oversampling  
+- 
 
-There are 5 steps to reproduced the figure above: 1) downloading the models, 2) evaluating the individual models, 3) running the uniform soup, 4) running the greedy soup, and 5) making the plot.
+### 3. Wandb  
+- 
 
-Note that any of these steps can be skipped, i.e, you can immediately generate the plot above via `python main.py --plot`.
-You can also run the greedy soup without evaluating the individual models.
-This is because we have already completed all of the steps and saved the results files in this repository (i.e., `individual_model_results.jsonl`).
-If you do decide to rerun a step, the corresponding results file or plot is deleted and regenerated.
+### 4. Optuna  
+- 
 
-The exception is step 1, downloading the models. If you wish to run steps 2, 3, or 4 you must first run step 1.
+### 5. Hard voting (Ensemble)
+- 
 
-### Install dependencies and downloading datasets
-
-To install the dependencies either run the following code or see [environment.md](environment.md) for more information.
-```bash
-conda env create -f environment.yml
-conda activate model_soups
-```
-
-To download the datasets see [datasets.md](datasets.md). When required, set `--data-location` to the `$DATA_LOCATION` used in [datasets.md](datasets.md).
-
-### Step 1: Downloading the models
-
-```bash
-python main.py --download-models --model-location <where models will be stored>
-```
-This will store models to `--model-location`.
+### 6. Contrastive learning  
+- 
 
 
-### Step 2: Evaluate individual models
 
-```bash
-python main.py --eval-individual-models --data-location <where data is stored> --model-location <where models are stored>
-```
-Note that this will first delete then rewrite the file `individual_model_results.jsonl`.
 
-### Step 3: Uniform soup
 
-```bash
-python main.py --uniform-soup --data-location <where data is stored> --model-location <where models are stored>
-```
-Note that this will first delete then rewrite the file `uniform_soup_results.jsonl`.
 
-### Step 4. Greedy soup
-
-```bash
-python main.py --greedy-soup --data-location <where data is stored> --model-location <where models are stored>
-```
-Note that this will first delete then rewrite the file `greedy_soup_results.jsonl`.
-
-### Step 5. Plot
-
-```bash
-python main.py --plot
-```
-Note that this will first delete then rewrite the file `figure.png`.
 
 ### Note
 
