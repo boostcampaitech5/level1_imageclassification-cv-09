@@ -65,12 +65,14 @@ class AgeLabels(int, Enum):
         else:
             return cls.OLD
 
+# gender 병경 함수
 def change_sex(gender):
     if gender == 'male':
         return 'female'
     else:
         return 'male'
     
+# incorrect <-> normal 변경 함수    
 def change_incorrect_normal(file_name):
     if file_name == 'normal':
         return MaskLabels.INCORRECT
@@ -78,7 +80,8 @@ def change_incorrect_normal(file_name):
         return MaskLabels.NORMAL
     else:
         return MaskLabels.MASK
-    
+
+# incorrect -> mask 변경 함수     
 def change_incorrect_to_mask(file_name):
     if file_name == 'incorrect_mask':
         return MaskLabels.MASK
@@ -98,6 +101,14 @@ class MaskBaseDataset(Dataset):
         "mask5": MaskLabels.MASK,
         "incorrect_mask": MaskLabels.INCORRECT,
         "normal": MaskLabels.NORMAL
+    }
+    
+    # relabeling 필요 목록
+    relabel_dict = {
+        'incorrect_to_from_normal': ['000020', '004418', '005227'],                         # incorrect <-> normal 변경
+        'incorrect_to_mask': ['000645', '003574'],                                          # incorrect -> mask 변경
+        'incorrect_gender': ['001200', '004432', '005223', '001498-1', '000725',            # gender 변경
+                             '006359', '006360', '006361', '006362', '006363', '006364'] 
     }
 
     def __init__(self,
@@ -144,15 +155,13 @@ class MaskBaseDataset(Dataset):
 
                 id, gender, race, age = profile.split("_")
                 
-                if id == '004418' or id == '005227' or id == '000020':
+                if id in self.relabel_dict['incorrect_to_from_normal']:     # incorrect <-> normal 이상치 라벨링 변경
                     mask_label = change_incorrect_normal(_file_name)
                     
-                if id == '003574' or id == '000645':
+                if id in self.relabel_dict['incorrect_to_mask']:            # incorrect -> mask 이상치 라벨링 변경
                     mask_label = change_incorrect_to_mask(_file_name)
                 
-                if id == '001200' or id == '004432' or id == '005223' or id == '001498-1' or \
-                id == '000725' or id == '006359' or id == '006360' or id == '006361' or \
-                id == '006362' or id == '006363' or id == '006364':
+                if id in self.relabel_dict['incorrect_gender']:             # gender 이상치 라벨링 변경
                     gender = change_sex(gender)
                     
                 gender_label = GenderLabels.from_str(gender)
