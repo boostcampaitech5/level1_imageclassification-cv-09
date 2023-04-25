@@ -21,7 +21,7 @@ import copy
 
 
 #############입력하세요#############
-model_name = 'finetuned_centercrop3000_epoch10.pt'
+model_name = "old_data24_epoch20.pt"
 ###################################
 
 def parse_arguments():

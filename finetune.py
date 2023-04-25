@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import torchvision.transforms.functional as TF
 import copy
-
+from torch.utils.data import ConcatDataset, Dataset, Subset, random_split
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
@@ -39,7 +39,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=128,
+        default=64,
     )
     parser.add_argument(
         "--custom-template", action="store_true", default=False,
@@ -91,7 +91,12 @@ def parse_arguments():
     parser.add_argument(
         "--i",
         type=int,
-        default=0,
+        default=4,
+    )
+    parser.add_argument(
+        "--old-aug",
+        type=bool,
+        default=False,
     )
 
     return parser.parse_args()
@@ -121,26 +126,48 @@ if __name__ == '__main__':
     )
 
     # Data Load
-    train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
-    train_set.dataset = copy.deepcopy(dataset)
-    # print("train_set[0]", train_set[0])
-    # print("val_set[0]", val_set[0])
+    #일반
+    if args.old_aug==False: 
+        train_set, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set.dataset = copy.deepcopy(dataset)
 
-    # Augmentation
-    transform = get_transforms()
-    train_set.dataset.set_transform(transform['train'])
-    val_set.dataset.set_transform(transform['val'])
+        # Augmentation
+        transform = get_transforms()
 
-    ## 이미지 저장
-    # image_data = np.transpose(train_set[0][0], (1, 2, 0))
-    # mean=(0.548, 0.504, 0.479)
-    # std=(0.237, 0.247, 0.246)
-    # image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
-    # print(image_data.shape)
-    # img_pil = TF.to_pil_image(image_data)
-    # img_pil.save('temp/train_set[0][0]_centorcrop.png')
+        train_set.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+    #특정 클래스인 old class만 따로 증강할 때
+    else:
+        train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set1.dataset = copy.deepcopy(dataset)
 
-    # exit()
+        need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
+
+        train_set2 = dataset.getSubset(need_change_idxs)
+        train_set2.dataset = copy.deepcopy(dataset)
+
+        # Augmentation
+        transform = get_transforms()
+
+        train_set1.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+
+        train_set2.dataset.set_transform(transform['train2'])
+
+        ## 이미지 저장
+        # image_data = np.transpose(train_set[0][0], (1, 2, 0))
+        # mean=(0.548, 0.504, 0.479)
+        # std=(0.237, 0.247, 0.246)
+        # image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
+        # print(image_data.shape)
+        # img_pil = TF.to_pil_image(image_data)
+        # img_pil.save('temp/train_set[0][0]_centorcrop.png')
+
+        # exit()
+
+        train_set = ConcatDataset([train_set1, train_set2])
+        # train_set = train_set1
+
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -196,7 +223,8 @@ if __name__ == '__main__':
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
-                    "criterion_name" : loss_fn})
+                    "criterion_name" : loss_fn},
+                    project="old_data_aug")
 
     for epoch in range(args.epochs):
         # Train
