@@ -121,7 +121,7 @@ python validation.py --model-name {모델명.pt 파일}
 
 ### 2. Optuna  
 ```bash
-python Optuna_Script.py
+python optuna_script.py
 ```
 - Optuna를 이용한 최적의 hyper parameter를 구하는 부분입니다.
 - optuna_script.py 파일에서 hyper parameter tuning을 위한 설정을 아래 사진과 같이 넣어주고 실행합니다.  
