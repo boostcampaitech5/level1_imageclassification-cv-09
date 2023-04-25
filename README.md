@@ -33,47 +33,50 @@ conda activate model_soups
 python main.py --download-models --model-location <where models will be stored>  
 ```
   
-## 실행 Step  
-### 1. Fine Tuning
+## Training Step  
+### 1. ViT-B/32 / ViT-B/16
+### 1-1. Fine Tuning
 ```bash
 python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 사이즈(ex:256)} --epochs {에폭 수(ex:10)} --random-seed {시드 설정}
 ```
 - ImageNet 등을 이용하여 미리 학습한 모델 parameter를 이용하여, 우리의 데이터셋에 맞게 마지막 layer를 바꿔주고 학습하는 부분입니다.
 - 모델 number range는 0~71(72개 입니다.)  
 - 저장되는 모델 pt 파일명은 "모델명i_epochs10.pt"
+- --model {ViT-B/32 | ViT-B/16} argument 이용하여, base 모델 설정이 가능합니다.
 - 추가로 learning rate, data-location과 같은 argument들이 있으며, 모든 argument는 default 값을 finetune.py에서 설정할 수 있습니다.
 - Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 다음 명령어 실행
 ```bash
 bash trining.sh
-```  
-
-#### 1-1. Data oversampling 여부 설정
+``` 
+#### 1-2. Data oversampling 여부 설정
 ```bash  
 python finetune.py --old-aug True
 ```  
 - 저희는 Old class의 train dataset이 적은 것을 어느정도 해결하기 위해 Old class data만 추가로 over sampling 하는 코드 또한 구현했습니다.  
 - finetune 파일을 실행할 때에, <--old-aug True> 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
 - 해당 data에 augmentation을 따로 설정해주기 위해, maskbasedataset.py 에서 get_transform 함수에 추가로 'train2' augmentation을 추가해 주었습니다.
-
-#### 1-2. Loss Function 설정
+#### 1-3. Loss Function 설정
 ```bash
 python finetune.py --loss-fn {CrossEntropyLoss | ContrastiveLoss}
 ```  
+- default loss function은 CrossEntropyLoss 이며, ContrastiveLoss를 사용 시에, argument를 설정해주면 됩니다.
+
+
+### 2. Model Soups
+#### 2-1. Fine Tuning
 - 
 
-
-### 2. Individual Evaluation  
+#### 2-2. Individual Evaluation  
 ```bash
 python main.py --eval-individual-models --name {모델명}
 ```
 - finetune을 통해 만든 모델들의 accuracy를 측정하여 기록해두는 부분입니다.
-![image](https://user-images.githubusercontent.com/113486402/233948441-7bab18bc-37f8-424b-a0fb-3223a37781b8.png)
-- "입력하세요" 부분에 측정할 모델의 개수(NUM_MODELS), 사용할 epoch, val_ratio를 적어줍니다.
+- 추가 argument로 모델의 개수(NUM_MODELS), 모델에서 사용한 epoch, val_ratio를 적어줍니다.
 - val_ratio에 None 값을 입력하면, 전체 dataset에 대해 evaludation을 진행합니다. 
 - finetune 당시에 random-seed를 설정해주었다면, None값을 넣어주면 안됩니다.
 - 실행 결과로 logs 폴더 안에 각 모델의 accuracy가 적힌 jsonl 파일이 생성됩니다. 
 
-### 3. Greedy Soup
+### 2-3. Greedy Soup
 ```bash
 python main.py --greedy-soup --name {모델명}
 ```  
@@ -82,16 +85,23 @@ python main.py --greedy-soup --name {모델명}
 - 실행 결과 model 폴더 안에 greedy 모델이 저장됩니다.
 - log 폴더 안에 변수 GREEDY_SOUP_LOG_FILE가 이름임 로그를 저장합니다. 해당 로그에는 averaging된 모델 정보가 저장됩니다.
 
-### 4. Inference
+
+## Inference Step
+### 1. Inference Step
 ```bash
-python inference.py
+python inference.py --model-name {모델명.pt 파일}
 ```
 - 생성한 모델 파일(.pt)를 이용하여 Test data를 예측하는 부분입니다.  
-- "입력하세요" 주석 내에 pt 파일명을 적고 실행시킵니다.   
-![image](https://user-images.githubusercontent.com/113486402/233952932-ea2967b4-a934-4238-a08f-7b1e85f6031d.png)
-- 최종 예측한 csv 파일이 output 폴더에 저장됩니다.  
+- argument 내에 pt 파일명을 적고 실행시킵니다.   
+- 최종 예측한 csv 파일이 output 폴더에 저장됩니다. 
 
-#### 4-1. Hard voting (Ensemble)
+#### 1-1. Validation 확인
+- 
+#### 1-2. Weighted Ensemble  
+- 
+#### 1-3. Soft voting (Ensemble)  
+- 
+#### 1-4. Hard voting (Ensemble)
 - inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
 - hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
   
