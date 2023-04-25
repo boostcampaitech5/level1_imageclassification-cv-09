@@ -98,7 +98,8 @@ python finetune.py --old-aug True
 - 
 
 ### 5. Hard voting (Ensemble)
-- 
+- inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
+- hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
 
 ### 6. Contrastive learning  
 - 
