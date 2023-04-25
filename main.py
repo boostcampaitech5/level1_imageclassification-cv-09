@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import random
 
-from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
+# from datasets import ImageNet2p, ImageNet, ImageNetV2, ImageNetSketch, ImageNetR, ObjectNet, ImageNetA#, MaskBaseDataset
 from datasets.maskbasedataset import MaskBaseDataset
 from utils import get_model_from_sd, test_model_on_dataset
 
@@ -29,6 +29,7 @@ def parse_arguments():
         "--model-location",
         type=str,
         default=os.path.expanduser('model/'),
+        # default=os.path.expanduser('/opt/ml/level1_imageclassification-cv-09/model'),
         help="Where to download the models.",
     )
     parser.add_argument(
@@ -49,7 +50,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=256,
+        default=128,
     )
     parser.add_argument(
         "--workers",
@@ -59,7 +60,7 @@ def parse_arguments():
     parser.add_argument(
         "--random-seed", 
         type=int,
-        default=42,
+        default=48,
     )
     parser.add_argument(
         "--name",
@@ -84,6 +85,7 @@ def parse_arguments():
 
 if __name__ == '__main__':
     args = parse_arguments()
+
 
     NUM_MODELS = args.model_num
     epoch = args.epoch

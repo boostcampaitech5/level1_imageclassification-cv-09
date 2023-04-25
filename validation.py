@@ -19,6 +19,7 @@ from zeroshot import zeroshot_classifier
 import torchvision.transforms.functional as TF
 import copy
 
+
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
