@@ -45,7 +45,6 @@ class GenderLabels(int, Enum):
         else:
             raise ValueError(f"Gender value should be either 'male' or 'female', {value}")
 
-
 class AgeLabels(int, Enum):
     YOUNG = 0
     MIDDLE = 1
@@ -178,7 +177,7 @@ class MaskBaseDataset(Dataset):
             print("[Warning] Calculating statistics... It can take a long time depending on your CPU machine")
             sums = []
             squared = []
-            for image_path in self.image_paths[:3000]:
+            for image_path in self.image_paths[:3000] :
                 image = np.array(Image.open(image_path)).astype(np.int32)
                 sums.append(image.mean(axis=(0, 1)))
                 squared.append((image ** 2).mean(axis=(0, 1)))
@@ -258,16 +257,6 @@ class MaskBaseDataset(Dataset):
         torch.utils.data.Subset 클래스 둘로 나눕니다.
         구현이 어렵지 않으니 구글링 혹은 IDE (e.g. pycharm) 의 navigation 기능을 통해 코드를 한 번 읽어보는 것을 추천드립니다^^
         """
-        # if test_ratio is not None : 
-        #     n_val = int(len(self) * val_ratio)
-        #     n_test = int(len(self) * test_ratio)
-        #     n_train = len(self) - n_val - n_test
-        #     if random_seed != -1 : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test], generator=torch.Generator().manual_seed(random_seed))
-        #     else : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test])
-
-        #     return train_set, val_set, test_set
 
         if val_ratio is None : 
             val_ratio = 1.
@@ -282,14 +271,6 @@ class MaskBaseDataset(Dataset):
         return train_set, val_set
 
     def populate_test(self, val_ratio=0.2, random_seed=42):
-        # self.test_dataset = self.get_test_dataset()
-        # self.test_loader = torch.utils.data.DataLoader(
-        #     self.test_dataset,
-        #     batch_size=self.batch_size,
-        #     num_workers=self.num_workers,
-        #     pin_memory=True,
-        #     sampler=self.get_test_sampler()
-        # )
         transform = get_transforms()
         
         _, val_set = self.split_dataset(val_ratio=val_ratio, random_seed=random_seed)
@@ -306,20 +287,193 @@ class MaskBaseDataset(Dataset):
             drop_last=True,
         )
 
-    # def clear(self):
-    #     # 데이터셋 해제 코드
-    #     self = None
-    # def __del__(self):
-    #     # 데이터셋 해제 코드
-    #     self.data_dir = None
-    #     self.mean = None
-    #     self.std = None
-    #     self.val_ratio = None
-    #     self.batch_size = None
-    #     self.num_workers = None
+class AgeDataset(Dataset):
+    num_classes = 3
 
-    #     self.transform = None
-    #     self.test_loader = None
+    _file_names = {
+        "mask1": MaskLabels.MASK,
+        "mask2": MaskLabels.MASK,
+        "mask3": MaskLabels.MASK,
+        "mask4": MaskLabels.MASK,
+        "mask5": MaskLabels.MASK,
+        "incorrect_mask": MaskLabels.INCORRECT,
+        "normal": MaskLabels.NORMAL
+    }
+    
+    # relabeling 필요 목록
+    relabel_dict = {
+        'incorrect_to_from_normal': ['000020', '004418', '005227'],                         # incorrect <-> normal 변경
+        'incorrect_to_mask': ['000645', '003574'],                                          # incorrect -> mask 변경
+        'incorrect_gender': ['001200', '004432', '005223', '001498-1', '000725',            # gender 변경
+                             '006359', '006360', '006361', '006362', '006363', '006364'] 
+    }
+
+    def __init__(self,
+                data_dir='/opt/ml/input/data/train/images', 
+                batch_size=32,
+                num_workers=4,
+                mean=(0.548, 0.504, 0.479),
+                std=(0.237, 0.247, 0.246),
+                val_ratio=0.2, 
+                random_seed=42):
+        
+        self.image_paths = []
+        self.mask_labels = []
+        self.gender_labels = []
+        self.age_labels = []
+
+        self.data_dir = data_dir        # '/opt/ml/input/data/train/images' -> 폴더명 ex) 000001_female_Asian_45
+        self.mean = mean
+        self.std = std
+        self.val_ratio = val_ratio
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+
+        self.transform = None
+        self.setup()
+        self.calc_statistics()
+        
+        self.populate_test(val_ratio, random_seed)
+
+    def setup(self):
+        profiles = os.listdir(self.data_dir)
+        for profile in profiles:
+            if profile.startswith("."):  # "." 로 시작하는 파일은 무시합니다
+                continue
+
+            img_folder = os.path.join(self.data_dir, profile)
+            for file_name in os.listdir(img_folder):
+                _file_name, ext = os.path.splitext(file_name)
+                if _file_name not in self._file_names:  # "." 로 시작하는 파일 및 invalid 한 파일들은 무시합니다
+                    continue
+
+                img_path = os.path.join(self.data_dir, profile, file_name)  # (resized_data, 000004_male_Asian_54, mask1.jpg)
+                mask_label = self._file_names[_file_name]
+
+                id, gender, race, age = profile.split("_")
+                
+                if id in self.relabel_dict['incorrect_to_from_normal']:     # incorrect <-> normal 이상치 라벨링 변경
+                    mask_label = change_incorrect_normal(_file_name)
+                    
+                if id in self.relabel_dict['incorrect_to_mask']:            # incorrect -> mask 이상치 라벨링 변경
+                    mask_label = change_incorrect_to_mask(_file_name)
+                
+                if id in self.relabel_dict['incorrect_gender']:             # gender 이상치 라벨링 변경
+                    gender = change_sex(gender)
+                    
+                gender_label = GenderLabels.from_str(gender)
+                age_label = AgeLabels.from_number(age)
+
+                self.image_paths.append(img_path)
+                self.mask_labels.append(mask_label)
+                self.gender_labels.append(gender_label)
+                self.age_labels.append(age_label)
+
+    def calc_statistics(self):
+        has_statistics = self.mean is not None and self.std is not None
+        if not has_statistics:
+            print("[Warning] Calculating statistics... It can take a long time depending on your CPU machine")
+            sums = []
+            squared = []
+            for image_path in self.image_paths[:3000]:
+                image = np.array(Image.open(image_path)).astype(np.int32)
+                sums.append(image.mean(axis=(0, 1)))
+                squared.append((image ** 2).mean(axis=(0, 1)))
+
+            self.mean = np.mean(sums, axis=0) / 255
+            self.std = (np.mean(squared, axis=0) - self.mean ** 2) ** 0.5 / 255
+
+    def set_transform(self, transform):
+        self.transform = transform
+
+    def __getitem__(self, index):
+        # assert self.transform is not None, ".set_tranform 메소드를 이용하여 transform 을 주입해주세요"
+        if self.transform is None :
+            print("!!.set_tranform 메소드를 이용하여 transform 을 주입해주세요!!") 
+        image = np.array(self.read_image(index))
+        mask_label = self.get_mask_label(index)
+        gender_label = self.get_gender_label(index)
+        age_label = self.get_age_label(index)
+        multi_class_label = self.encode_multi_class(mask_label, gender_label, age_label)
+        if self.transform is not None : 
+            transformed = self.transform(image=image)
+            image = transformed["image"]
+        
+        # image_transform = self.transform(image)
+        return image, age_label
+        
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def get_mask_label(self, index) -> MaskLabels:
+        return self.mask_labels[index]
+
+    def get_gender_label(self, index) -> GenderLabels:
+        return self.gender_labels[index]
+
+    def get_age_label(self, index) -> AgeLabels:
+        return self.age_labels[index]
+
+    def read_image(self, index):
+        image_path = self.image_paths[index]
+        return Image.open(image_path)
+
+    @staticmethod
+    def encode_multi_class(mask_label, gender_label, age_label) -> int:
+        return mask_label * 6 + gender_label * 3 + age_label
+
+    @staticmethod
+    def decode_multi_class(multi_class_label) -> Tuple[MaskLabels, GenderLabels, AgeLabels]:
+        mask_label = (multi_class_label // 6) % 3
+        gender_label = (multi_class_label // 3) % 2
+        age_label = multi_class_label % 3
+        return mask_label, gender_label, age_label
+
+    @staticmethod
+    def denormalize_image(image, mean, std):
+        img_cp = image.copy()
+        img_cp *= std
+        img_cp += mean
+        img_cp *= 255.0
+        img_cp = np.clip(img_cp, 0, 255).astype(np.uint8)
+        return img_cp
+
+    def split_dataset(self, val_ratio=0.2, random_seed=42) -> Tuple[Subset, Subset]:
+        """
+        데이터셋을 train 과 val 로 나눕니다,
+        pytorch 내부의 torch.utils.data.random_split 함수를 사용하여
+        torch.utils.data.Subset 클래스 둘로 나눕니다.
+        구현이 어렵지 않으니 구글링 혹은 IDE (e.g. pycharm) 의 navigation 기능을 통해 코드를 한 번 읽어보는 것을 추천드립니다^^
+        """
+
+        if val_ratio is None : 
+            val_ratio = 1.
+            
+        n_val = int(len(self) * val_ratio)
+        n_train = len(self) - n_val
+        if random_seed != -1 : 
+            train_set, val_set = random_split(self, [n_train, n_val], generator=torch.Generator().manual_seed(random_seed))
+        else : 
+            train_set, val_set = random_split(self, [n_train, n_val])
+
+        return train_set, val_set
+
+    def populate_test(self, val_ratio=0.2, random_seed=42):
+        transform = get_transforms()
+        
+        _, val_set = self.split_dataset(val_ratio=val_ratio, random_seed=random_seed)
+
+        val_set.dataset.set_transform(transform['val'])
+
+        self.test_loader = torch.utils.data.DataLoader(
+            val_set,
+            batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            shuffle=False,
+            pin_memory=True,
+            drop_last=True,
+        )
 
 def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
     """
@@ -342,8 +496,8 @@ def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
         transformations['train'] = Compose([
             # CenterCrop(height=412, width=384),
             Resize(img_size[0], img_size[1], p=1.0),
-            # Sharpen(p=0.5),
-            # ColorJitter(p=0.5, hue=0),
+            #Sharpen(p=0.5),
+            ColorJitter(p=0.5, hue=0),
             # HorizontalFlip(p=0.5),
             # ShiftScaleRotate(p=0.5),
             # HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit=0.2, val_shift_limit=0.2, p=0.5),
@@ -372,7 +526,6 @@ def get_transforms(need=('train', 'train2', 'val'), img_size=(224, 224)):
             ToTensorV2(p=1.0),
         ], p=1.0)
     return transformations
-
 
 class TestDataset(Dataset):
     def __init__(self, img_paths, resize, mean=(0.56019265, 0.52410305, 0.50145299), std=(0.23308824, 0.24294489, 0.2456003)):

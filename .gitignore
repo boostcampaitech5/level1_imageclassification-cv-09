@@ -1,3 +1,8 @@
+finetune_age.py
+val_img/
+output/
+model/
+temp/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

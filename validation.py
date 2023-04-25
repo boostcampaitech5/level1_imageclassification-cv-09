@@ -13,23 +13,19 @@ import matplotlib.pyplot as plt
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
-from datasets.maskbasedataset import MaskBaseDataset, BaseAugmentation, get_transforms
+from datasets.maskbasedataset import MaskBaseDataset, get_transforms, AgeDataset
 from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_from_sd
 from zeroshot import zeroshot_classifier
 import torchvision.transforms.functional as TF
 import copy
 
 
-#############입력하세요#############
-model_name = "old_data24_epoch20.pt"
-###################################
-
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--data-location",
         type=str,
-        default=os.path.expanduser('~/data'),
+        default=os.path.expanduser('/opt/ml/input/data/train/images'),
         help="The root directory for the datasets.",
     )
     parser.add_argument(
@@ -83,6 +79,26 @@ def parse_arguments():
         type=float,
         default=0.1,
     )
+    parser.add_argument(
+        "--weighted-ensemble",
+        default=None, 
+        help='Filename of age model to apply weighted average ensemble'
+    )
+    parser.add_argument(
+        "--soft-voting",
+        default=None,
+        help='Filename of model to apply soft voting ensemble'
+    )
+    parser.add_argument(
+        "--model-name",
+        default=None,
+        help='Filename of model'
+    )
+    parser.add_argument(
+        "--model",
+        default='ViT-B/32',
+        help='Model to use -- you can try another like ViT-L/14'
+    )
 
     return parser.parse_args()
 
@@ -115,9 +131,8 @@ def grid_image(np_images, gts, preds, is_wrong, n=16):
 
     return figure
 
-def load_model(saved_model, num_classes, device):
-    model_path = os.path.join('/opt/ml/level1_imageclassification-cv-09/model', model_name)
-    base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
+def load_model(model_path, device, model):
+    base_model, preprocess = clip.load(model, 'cuda', jit=False)
     print('model_path', model_path)
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
     model = get_model_from_sd(state_dict, base_model)
@@ -128,9 +143,11 @@ if __name__ == '__main__':
     
     args = parse_arguments()
     DEVICE = 'cuda'
-    
-    model_path = os.path.join(args.model_location, model_name) 
-    model = load_model(model_path, 18, 'cuda').to('cuda')
+
+    model_path = os.path.join(args.model_location, args.model_name) 
+    model = load_model(model_path, 'cuda', args.model).to('cuda')
+
+    assert not (args.weighted_ensemble and args.soft_voting), "Activate one either Weighted Average Ensemble or Soft Voting "
 
     if args.random_seed != -1 : 
         torch.manual_seed(args.random_seed)
@@ -142,9 +159,9 @@ if __name__ == '__main__':
         random.seed(args.random_seed)
 
     dataset = MaskBaseDataset(
-        data_dir='/opt/ml/input/data/train/images'
+        data_dir=args.data_location
     )
-
+    
     # Data Load
     _, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
 
@@ -184,9 +201,6 @@ if __name__ == '__main__':
     devices = [x for x in range(torch.cuda.device_count())]
     model = torch.nn.DataParallel(model,  device_ids=devices)
 
-    model_parameters = [p for p in model.parameters() if p.requires_grad]
-    optimizer = torch.optim.AdamW(model_parameters, lr=args.lr, weight_decay=args.wd)
-
     loss_fn = torch.nn.CrossEntropyLoss()
 
     correct, count = 0.0, 0.0
@@ -200,19 +214,81 @@ if __name__ == '__main__':
     model.eval()
 
     wrong_imgs = None
+
+    if args.weighted_ensemble or args.soft_voting: 
+        if args.weighted_ensemble :
+            print('Start Weighted Ensemble')
+            model_path2 = os.path.join(args.model_location, args.weighted_ensemble)
+            dataset2 = AgeDataset(
+                data_dir=args.data_location
+            ) 
+        if args.soft_voting : 
+            print('Start Soft Voting')
+            model_path2 = os.path.join(args.model_location, args.soft_voting) 
+            dataset2 = MaskBaseDataset(
+                data_dir=args.data_location
+            )
+        model2 = load_model(model_path2, 'cuda', args.model).to('cuda')
+        _, val_set2= dataset2.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        transform2 = get_transforms()
+        val_set2.dataset.set_transform(transform2['val'])
+        val_loader2 = torch.utils.data.DataLoader(
+            val_set2,
+            batch_size=args.batch_size,
+            num_workers=args.workers,
+            shuffle=False,
+            pin_memory=True,
+            drop_last=True,
+        )
+        for p in model2.parameters():
+            p.data = p.data.float()
+        model2 = model2.cuda()
+        model2 = torch.nn.DataParallel(model2,  device_ids=devices)
+        test_loader2 = val_loader2
+        model2.eval()
+
     with torch.no_grad():
         print('*'*80)
         print('Starting eval')
         correct, count = 0.0, 0.0
-        pbar = tqdm(test_loader)
-        for i, batch in enumerate(pbar):
+        pbars = [tqdm(test_loader)]
+        if args.weighted_ensemble or args.soft_voting: 
+            pbars.append(tqdm(test_loader2))
+        for i, (batches) in enumerate(zip(*pbars)):
+            if len(batches)==1:
+                batch, = batches
+            elif len(batches) > 1 :
+                batch, batch2= batches
+                batch2 = maybe_dictionarize_batch(batch2)
+                inputs2, labels2 = batch2['images'].to(DEVICE), batch2['labels'].to(DEVICE)
+                logits2 = model2(inputs2)
+
             batch = maybe_dictionarize_batch(batch)
             inputs, labels = batch['images'].to(DEVICE), batch['labels'].to(DEVICE)
-
             logits = model(inputs)
 
-            loss = loss_fn(logits, labels)
+            if args.weighted_ensemble:
+                for i in range(len(logits)): 
+                    age1_percent = 1. + logits2[i][0] / logits2[i].sum()
+                    age2_percent = 1. + logits2[i][1] / logits2[i].sum()
+                    age3_percent = 1. + logits2[i][2] / logits2[i].sum()
+                    
+                    age_percent = torch.tensor([age1_percent, age2_percent, age3_percent,
+                        age1_percent, age2_percent, age3_percent,
+                        age1_percent, age2_percent, age3_percent,
+                        age1_percent, age2_percent, age3_percent,
+                        age1_percent, age2_percent, age3_percent,
+                        age1_percent, age2_percent, age3_percent] , device='cuda')
 
+                    logits[i] *= age_percent
+            
+            if args.soft_voting:
+                for i in range(len(logits)): 
+                    logits[i] = (logits[i] - logits[i].min()) / (logits[i].max() - logits[i].min())
+                    logits2[i] = (logits2[i] - logits2[i].min()) / (logits2[i].max() - logits2[i].min())
+                    logits[i] += logits2[i]
+
+            loss = loss_fn(logits, labels)
             pred = logits.argmax(dim=1, keepdim=True)
             correct += pred.eq(labels.view_as(pred)).sum().item()
 
@@ -239,8 +315,8 @@ if __name__ == '__main__':
             num_true_values_per_col = is_wrong.sum(dim=0)
 
             count += len(logits)
-            pbar.set_description(
-                f"Val loss: {loss.item():.4f}   Acc: {100*correct/count:.2f}")
+            # pbar.set_description(
+            #     f"Val loss: {loss.item():.4f}   Acc: {100*correct/count:.2f}")
 
             if wrong_imgs is None : 
                 wrong_imgs = torch.clone(inputs[is_wrong]).detach().cpu().permute(0, 2, 3, 1).numpy()
@@ -251,7 +327,7 @@ if __name__ == '__main__':
 
             figure = grid_image(inputs_np, labels, pred, is_wrong, n=25) # 16
 
-            dir = f'val_img/{model_name}'
+            dir = f'val_img/{args.model_name}'
             os.makedirs(dir, exist_ok=True)
             figure.savefig(f'{dir}/my_plot_batch{i}.png')
 

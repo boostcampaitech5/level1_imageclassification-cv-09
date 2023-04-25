@@ -12,8 +12,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import torchvision.transforms.functional as TF
 import copy
-from torch.utils.data import ConcatDataset, Dataset, Subset, random_split
-from timm.data.transforms_factory import transforms_imagenet_train
+from torch.utils.data import ConcatDataset
 
 from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import MaskBaseDataset, get_transforms, grid_image
@@ -21,13 +20,14 @@ from utils import ModelWrapper, maybe_dictionarize_batch, cosine_lr, get_model_f
 from zeroshot import zeroshot_classifier
 from openai_imagenet_template import openai_imagenet_template
 import datasets.maskbasedataset 
+from pytorch_metric_learning import losses
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--data-location",
         type=str,
-        default=os.path.expanduser('~/data'),
+        default=os.path.expanduser('/opt/ml/input/data/train/images/'),
         help="The root directory for the datasets.",
     )
     parser.add_argument(
@@ -98,6 +98,11 @@ def parse_arguments():
         type=bool,
         default=False,
     )
+    parser.add_argument(
+        "--loss_fn",
+        default='CrossEntropyLoss',
+        help='Loss function used in training'
+    )
 
     return parser.parse_args()
 
@@ -122,11 +127,12 @@ if __name__ == '__main__':
     base_model, preprocess = clip.load(args.model, 'cuda', jit=False)
     
     dataset = MaskBaseDataset(
-        data_dir='/opt/ml/input/data/train/images'
+        data_dir=args.data_location
     )
 
+
     # Data Load
-    #일반
+    # 일반
     if args.old_aug==False: 
         train_set, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
         train_set.dataset = copy.deepcopy(dataset)
@@ -136,7 +142,7 @@ if __name__ == '__main__':
 
         train_set.dataset.set_transform(transform['train'])
         val_set.dataset.set_transform(transform['val'])
-    #특정 클래스인 old class만 따로 증강할 때
+    # 특정 클래스인 old class만 따로 증강할 때
     else:
         train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
         train_set1.dataset = copy.deepcopy(dataset)
@@ -154,20 +160,19 @@ if __name__ == '__main__':
 
         train_set2.dataset.set_transform(transform['train2'])
 
-        ## 이미지 저장
-        # image_data = np.transpose(train_set[0][0], (1, 2, 0))
-        # mean=(0.548, 0.504, 0.479)
-        # std=(0.237, 0.247, 0.246)
-        # image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
-        # print(image_data.shape)
-        # img_pil = TF.to_pil_image(image_data)
-        # img_pil.save('temp/train_set[0][0]_centorcrop.png')
-
-        # exit()
-
-        train_set = ConcatDataset([train_set1, train_set2])
-        # train_set = train_set1
-
+    ## 학습 이미지 저장 (Augmentation이 잘 적용됐는지 확인)
+    SAVE_IMG = False
+    if SAVE_IMG : 
+        image_data = np.transpose(train_set[0][0], (1, 2, 0))
+        mean=(0.548, 0.504, 0.479)
+        std=(0.237, 0.247, 0.246)
+        image_data = MaskBaseDataset.denormalize_image(np.array(image_data), mean, std)
+        print(image_data.shape)
+        img_pil = TF.to_pil_image(image_data)
+        os.makedirs('temp', exist_ok=True)
+        img_pil.save('temp/temp.png')
+        exit()
+        
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -191,17 +196,12 @@ if __name__ == '__main__':
     NUM_CLASSES = len(class_names)
     feature_dim = base_model.visual.output_dim
 
-    # state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-    # model = ModelWrapper(base_model, feature_dim, NUM_CLASSES, normalize=True, initial_weights=clf)
-
-
     #############모델 load#############
-    base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
+    base_model, preprocess = clip.load(args.model, 'cpu', jit=False)
     model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
     model = get_model_from_sd_modified(state_dict, base_model, NUM_CLASSES, initial_weights=clf)
     ###################################
-
 
     for p in model.parameters():
         p.data = p.data.float()
@@ -213,13 +213,16 @@ if __name__ == '__main__':
     model_parameters = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(model_parameters, lr=args.lr, weight_decay=args.wd)
 
-
     num_batches = len(train_loader)
     scheduler = cosine_lr(optimizer, args.lr, args.warmup_length, args.epochs * num_batches)
 
-    loss_fn = torch.nn.CrossEntropyLoss()
+    if args.loss_fn == 'CrossEntropyLoss':
+        loss_fn = torch.nn.CrossEntropyLoss()
+    elif args.loss_fn == 'ContrastiveLoss':
+        loss_fn = losses.ContrastiveLoss(pos_margin=1, neg_margin=1)
+    print("Loss Function : ", args.loss_fn)
 
-    wandb.init(name=args.name+str(args.i), config={"batch_size": args.batch_size,
+    wandb.init(name=f'{args.name}_i{args.i}', config={"batch_size": args.batch_size,
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
@@ -300,7 +303,7 @@ if __name__ == '__main__':
         print(f'Val acc at epoch {epoch+1}: {100*top1:.2f}')
 
         if (epoch+1) % 5 == 0 :
-            model_path = os.path.join(args.model_location, f'{args.name}{args.i}_epoch{epoch+1}.pt')
+            model_path = os.path.join(args.model_location, f'{args.name}_seed{args.random_seed}_i{args.i}_epoch{epoch+1}.pt')
             print('Saving model to', model_path)
             torch.save(model.module.state_dict(), model_path)
 

@@ -22,13 +22,14 @@ def parse_arguments():
     parser.add_argument(
         "--data-location",
         type=str,
-        default=os.path.expanduser('~/data'),
+        default=os.path.expanduser('/opt/ml/input/data/train/images/'),
         help="The root directory for the datasets.",
     )
     parser.add_argument(
         "--model-location",
         type=str,
-        default=os.path.expanduser('/opt/ml/level1_imageclassification-cv-09/model'),
+        default=os.path.expanduser('model/'),
+        # default=os.path.expanduser('/opt/ml/level1_imageclassification-cv-09/model'),
         help="Where to download the models.",
     )
     parser.add_argument(
@@ -56,7 +57,6 @@ def parse_arguments():
         type=int,
         default=4,
     )
-    
     parser.add_argument(
         "--random-seed", 
         type=int,
@@ -66,16 +66,30 @@ def parse_arguments():
         "--name",
         default='finetune_cp'
     )
+    parser.add_argument(
+        "--model-num", 
+        type=int,
+        default=40,
+    )
+    parser.add_argument(
+        "--epoch", 
+        type=int,
+        default=20,
+    )
+    parser.add_argument(## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
+        "--val-ratio", 
+        type=float,
+        default=0.2,
+    )
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_arguments()
 
-    ###############입력하세요##############
-    NUM_MODELS = 16
-    epoch = 20
-    val_ratio=0.2 ## default 0.2 / None값을 넣는다면, 전체 dataset에 대해 evaluation 진행
-    ######################################
+
+    NUM_MODELS = args.model_num
+    epoch = args.epoch
+    val_ratio=args.val_ratio 
     
     model_name = args.name 
 
@@ -89,8 +103,8 @@ if __name__ == '__main__':
         random.seed(args.random_seed)
 
 
-    INDIVIDUAL_MODEL_RESULTS_FILE = f'logs/individual_results_{model_name}_num{NUM_MODELS}_epoch{epoch}.jsonl'
-    GREEDY_SOUP_LOG_FILE = f'logs/greedy_soup_log_{model_name}_num{NUM_MODELS}_epoch{epoch}.txt'
+    INDIVIDUAL_MODEL_RESULTS_FILE = f'logs/individual_results_{model_name}_seed{args.random_seed}_num{NUM_MODELS}_epoch{epoch}.jsonl'
+    GREEDY_SOUP_LOG_FILE = f'logs/greedy_soup_log_{model_name}_seed{args.random_seed}_num{NUM_MODELS}_epoch{epoch}.txt'
 
     UNIFORM_SOUP_RESULTS_FILE = 'logs/uniform_soup_results.jsonl'
     GREEDY_SOUP_RESULTS_FILE = 'logs/greedy_soup_results.jsonl'
@@ -106,7 +120,7 @@ if __name__ == '__main__':
                 out=args.model_location
                 )
 
-    model_paths = [os.path.join(args.model_location, f'{model_name}{i}_epoch{epoch}.pt') for i in range(NUM_MODELS)]
+    model_paths = [os.path.join(args.model_location, f'{model_name}_seed{args.random_seed}_i{i}_epoch{epoch}.pt') for i in range(NUM_MODELS)]
     # Step 2: Evaluate individual models.
     if args.eval_individual_models or args.uniform_soup or args.greedy_soup:
         base_model, preprocess = clip.load('ViT-B/32', 'cpu', jit=False)
@@ -117,11 +131,9 @@ if __name__ == '__main__':
         for j, model_path in enumerate(model_paths):
             # assert os.path.exists(model_path)
             state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-            
 
             model = get_model_from_sd(state_dict, base_model)
-
-            results = {'model_name' : f'{model_name}{j}_epoch{epoch}'}
+            results = {'model_name' : f'{model_name}_seed{args.random_seed}_i{j}_epoch{epoch}'}
             # Note: ImageNet2p is the held-out minival set from ImageNet train that we use.
             # It is called 2p for 2 percent of ImageNet, or 26k images.
             # See utils on how this dataset is handled slightly differently.
@@ -130,7 +142,7 @@ if __name__ == '__main__':
                 print(f'Evaluating model {j} of {NUM_MODELS - 1} on {dataset_cls.__name__}.')
 
                 # dataset = dataset_cls(preprocess, args.data_location, args.batch_size, args.workers)
-                dataset = dataset_cls(batch_size=args.batch_size, val_ratio=val_ratio)
+                dataset = dataset_cls(batch_size=args.batch_size, val_ratio=val_ratio, random_seed=args.random_seed)
                 accuracy = test_model_on_dataset(model, dataset)
                 results[dataset_cls.__name__] = accuracy
                 print(accuracy)
@@ -191,7 +203,7 @@ if __name__ == '__main__':
         greedy_soup_params = torch.load(os.path.join(args.model_location, f'{sorted_models[0]}.pt'))
         best_val_acc_so_far = individual_model_val_accs[0][1]
         # held_out_val_set = ImageNet2p(preprocess, args.data_location, args.batch_size, args.workers)
-        held_out_val_set = MaskBaseDataset(batch_size=256)
+        held_out_val_set = MaskBaseDataset(batch_size=args.batch_size, random_seed=args.random_seed)
 
         # Now, iterate through all models and consider adding them to the greedy soup.
         for i in range(1, NUM_MODELS):
@@ -224,9 +236,8 @@ if __name__ == '__main__':
 
         # Finally, evaluate the greedy soup.
         model = get_model_from_sd(greedy_soup_params, base_model)
-
         # save final model
-        model_path = os.path.join(args.model_location, f'{model_name}_epoch{epoch}_greedysoup_num{NUM_MODELS}.pt')
+        model_path = os.path.join(args.model_location, f'{model_name}_seed{args.random_seed}_epoch{epoch}_greedysoup_num{NUM_MODELS}.pt')
         print('Saving model to', model_path)
         torch.save(model.module.state_dict(), model_path)
 
