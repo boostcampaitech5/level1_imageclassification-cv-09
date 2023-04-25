@@ -1,7 +1,9 @@
-# 안녕하세요! 👨‍👨‍👦‍👦
+# Image Classication Competition 👨‍👨‍👦‍👦
 
 네이버 부스트캠프 AItech 5기 CV_9팀 level-1(image classification) 프로젝트 공간입니다.\
+
 #ViT32 #ViT16 #ModelSoups #Relabeling #Oversampling #ContrastiveLearnig #WeightedAverageEnsemble #HardVoting #SoftVoting #Optuna #Wandb
+
 
 ![image](https://user-images.githubusercontent.com/72616557/228166051-e8197cb8-0025-485d-becc-cba4a5c257fd.png)
 
@@ -14,11 +16,6 @@
 | [<img src="https://avatars.githubusercontent.com/u/113486402?s=400&v=4" alt="" style="width:100px;100px;">](https://github.com/june95) <br/> | [<img src="https://avatars.githubusercontent.com/u/33598545?s=400&u=d0aaa9e96fd2fa1d0c1aa034d8e9e2c8daf96473&v=4" alt="" style="width:100px;100px;">](https://github.com/Hyunmin-H) <br/> | [<img src="https://avatars.githubusercontent.com/u/72616557?v=4" alt="" style="width:100px;100px;">](https://github.com/hyuns66) <br/> | [<img src="https://avatars.githubusercontent.com/u/91449518?v=4" alt="" style="width:100px;100px;">](https://github.com/jibeomkim7) <br/> |[<img src="https://avatars.githubusercontent.com/u/63313306?s=400&u=094cba544d8029b4f93aa191d036a109d6265fa8&v=4" alt="" style="width:100px;100px;">](https://github.com/jennifer060697) <br/> |
 
 
-해당 프로젝트 repository에서 참고한 reference 목록입니다.
-
-Model soups : [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
-
-ViT : https://github.com/google-research/vision_transformer
 
   
 ## Setting Step
@@ -157,3 +154,11 @@ python optuna_script.py
 
 ![image](https://user-images.githubusercontent.com/113486402/234262185-8e5d8a25-e28b-453f-934c-36e326fb6d0a.png)
 
+## Reference
+
+
+Model soups : [Model soups: averaging weights of multiple fine-tuned models improves accuracy without increasing inference time](https://arxiv.org/abs/2203.05482).
+
+ViT : https://github.com/google-research/vision_transformer
+
+ContrastiveLoss : https://github.com/KevinMusgrave/pytorch-metric-learning
