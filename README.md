@@ -120,4 +120,10 @@ python validation.py --model-name {모델명.pt 파일}
 - maskbasedataset.py에서 추가로 relabeling이 필요한 id가 있다면 간단하게 해당 list에 넣어주기만 하면 relabeling을 수행합니다.  
 
 ### 2. Optuna  
-- 
+```bash
+python Optuna_Script.py
+```
+- Optuna를 이용한 최적의 hyper parameter를 구하는 부분입니다.
+- optuna_script.py 파일에서 hyper parameter tuning을 위한 설정을 아래 사진과 같이 넣어주고 실행합니다.  
+![image](https://user-images.githubusercontent.com/113486402/234262185-8e5d8a25-e28b-453f-934c-36e326fb6d0a.png)
+
