@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import torchvision.transforms.functional as TF
 import copy
+from torch.utils.data import ConcatDataset
 
 from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import MaskBaseDataset, get_transforms, grid_image
@@ -38,7 +39,7 @@ def parse_arguments():
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=128,
+        default=64,
     )
     parser.add_argument(
         "--custom-template", action="store_true", default=False,
@@ -90,7 +91,12 @@ def parse_arguments():
     parser.add_argument(
         "--i",
         type=int,
-        default=0,
+        default=4,
+    )
+    parser.add_argument(
+        "--old-aug",
+        type=bool,
+        default=False,
     )
     parser.add_argument(
         "--loss_fn",
@@ -124,14 +130,35 @@ if __name__ == '__main__':
         data_dir=args.data_location
     )
 
-    # Data Load
-    train_set, val_set= dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
-    train_set.dataset = copy.deepcopy(dataset)
 
-    # Augmentation
-    transform = get_transforms()
-    train_set.dataset.set_transform(transform['train'])
-    val_set.dataset.set_transform(transform['val'])
+    # Data Load
+    # 일반
+    if args.old_aug==False: 
+        train_set, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set.dataset = copy.deepcopy(dataset)
+
+        # Augmentation
+        transform = get_transforms()
+
+        train_set.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+    # 특정 클래스인 old class만 따로 증강할 때
+    else:
+        train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set1.dataset = copy.deepcopy(dataset)
+
+        need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
+
+        train_set2 = dataset.getSubset(need_change_idxs)
+        train_set2.dataset = copy.deepcopy(dataset)
+
+        # Augmentation
+        transform = get_transforms()
+
+        train_set1.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+
+        train_set2.dataset.set_transform(transform['train2'])
 
     ## 학습 이미지 저장 (Augmentation이 잘 적용됐는지 확인)
     SAVE_IMG = False
@@ -145,7 +172,7 @@ if __name__ == '__main__':
         os.makedirs('temp', exist_ok=True)
         img_pil.save('temp/temp.png')
         exit()
-
+        
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=args.batch_size,
@@ -199,7 +226,8 @@ if __name__ == '__main__':
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
-                    "criterion_name" : loss_fn})
+                    "criterion_name" : loss_fn},
+                    project="old_data_aug")
 
     for epoch in range(args.epochs):
         # Train

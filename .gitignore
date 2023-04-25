@@ -134,3 +134,9 @@ dmypy.json
 .pyre/
 .vscode
 .idea
+
+wandb/
+model/
+output/
+val_img/
+logs/

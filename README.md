@@ -84,7 +84,12 @@ python inference.py
 - maskbasedataset.py에서 추가로 relabeling이 필요한 id가 있다면 간단하게 해당 list에 넣어주기만 하면 relabeling을 수행합니다.  
 
 ### 2. Data oversampling  
-- 
+```bash  
+python finetune.py --old-aug True
+```  
+- 저희는 Old class의 train dataset이 적은 것을 어느정도 해결하기 위해 Old class data만 추가로 over sampling 하는 코드 또한 구현했습니다.  
+- finetune 파일을 실행할 때에, <--old-aug True> 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
+- 해당 data에 augmentation을 따로 설정해주기 위해, maskbasedataset.py 에서 get_transform 함수에 추가로 'train2' augmentation을 추가해 주었습니다.
 
 ### 3. Wandb  
 - 
@@ -93,7 +98,8 @@ python inference.py
 - 
 
 ### 5. Hard voting (Ensemble)
-- 
+- inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
+- hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
 
 ### 6. Contrastive learning  
 - 

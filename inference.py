@@ -11,6 +11,7 @@ from datasets.maskbasedataset import TestDataset, MaskBaseDataset
 import clip
 import math
 
+
 def load_model(model_path, device, model):
     base_model, preprocess = clip.load(model, 'cuda', jit=False)
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
