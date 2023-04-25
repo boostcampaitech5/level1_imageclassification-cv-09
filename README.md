@@ -42,7 +42,7 @@ python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 �
 - ImageNet 등을 이용하여 미리 학습한 모델 parameter를 이용하여, 우리의 데이터셋에 맞게 마지막 layer를 바꿔주고 학습하는 부분입니다.
 - 모델 number range는 0~71(72개 입니다.)  
 - 저장되는 모델 pt 파일명은 "모델명i_epochs10.pt"
-- --model {ViT-B/32 | ViT-B/16} argument 이용하여, base 모델 설정이 가능합니다.
+- "--model {ViT-B/32 | ViT-B/16}" argument 이용하여, base 모델 설정이 가능합니다.
 - 추가로 learning rate, data-location과 같은 argument들이 있으며, 모든 argument는 default 값을 finetune.py에서 설정할 수 있습니다.
 - Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 다음 명령어 실행
 ```bash
@@ -53,7 +53,7 @@ bash trining.sh
 python finetune.py --old-aug True
 ```  
 - 저희는 Old class의 train dataset이 적은 것을 어느정도 해결하기 위해 Old class data만 추가로 over sampling 하는 코드 또한 구현했습니다.  
-- finetune 파일을 실행할 때에, <--old-aug True> 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
+- finetune 파일을 실행할 때에, "--old-aug True" 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
 - 해당 data에 augmentation을 따로 설정해주기 위해, maskbasedataset.py 에서 get_transform 함수에 추가로 'train2' augmentation을 추가해 주었습니다.
 #### 1-3. Loss Function 설정
 ```bash
@@ -64,7 +64,8 @@ python finetune.py --loss-fn {CrossEntropyLoss | ContrastiveLoss}
 
 ### 2. Model Soups
 #### 2-1. Fine Tuning
-- 
+- model soups는 ViT-B/32 모델을 기준으로 하기 때문에, 1-1 의 Fine Tuning에서 "--model ViT-B/32" argument를 이용하여 사용할 수 있습니다.
+- 이 외의 사용법은 1-1 과 동일합니다.
 
 #### 2-2. Individual Evaluation  
 ```bash
@@ -96,11 +97,17 @@ python inference.py --model-name {모델명.pt 파일}
 - 최종 예측한 csv 파일이 output 폴더에 저장됩니다. 
 
 #### 1-1. Validation 확인
-- 
+```bash
+python validation.py --model-name {모델명.pt 파일}
+```
+- 우리가 학습한 모델을 가지고 동일한 validation set에서 어떤 class가 예측을 잘못했는지 출력해주는 부분입니다.
+- 해당 모델.pt를 학습했을 때, 사용했던 seed 값을 동일하게 유지해 주어야 정확한 확률과 예측값이 나옵니다.
+- 아래 그림은 출력 예시입니다.   
+
 #### 1-2. Weighted Ensemble  
-- 
+- "--weighted-ensemble" argument를 이용하여 사용할 수 있습니다.
 #### 1-3. Soft voting (Ensemble)  
-- 
+- "--soft-voting" argument를 이용하여 사용할 수 있습니다. 
 #### 1-4. Hard voting (Ensemble)
 - inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
 - hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
