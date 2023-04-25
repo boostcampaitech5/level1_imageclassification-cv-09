@@ -45,7 +45,22 @@ python finetune.py --name {모델명} --i {모델 number} --batch-size {배치 �
 - Tip : 쉘 스크립트를 사용하여 학습 자동화하기 -> training.sh 파일 작성 후 다음 명령어 실행
 ```bash
 bash trining.sh
-```
+```  
+
+#### 1-1. Data oversampling 여부 설정
+```bash  
+python finetune.py --old-aug True
+```  
+- 저희는 Old class의 train dataset이 적은 것을 어느정도 해결하기 위해 Old class data만 추가로 over sampling 하는 코드 또한 구현했습니다.  
+- finetune 파일을 실행할 때에, <--old-aug True> 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
+- 해당 data에 augmentation을 따로 설정해주기 위해, maskbasedataset.py 에서 get_transform 함수에 추가로 'train2' augmentation을 추가해 주었습니다.
+
+#### 1-2. Loss Function 설정
+```bash
+python finetune.py --loss-fn {CrossEntropyLoss | ContrastiveLoss}
+```  
+- 
+
 
 ### 2. Individual Evaluation  
 ```bash
@@ -74,38 +89,20 @@ python inference.py
 - 생성한 모델 파일(.pt)를 이용하여 Test data를 예측하는 부분입니다.  
 - "입력하세요" 주석 내에 pt 파일명을 적고 실행시킵니다.   
 ![image](https://user-images.githubusercontent.com/113486402/233952932-ea2967b4-a934-4238-a08f-7b1e85f6031d.png)
-- 최종 예측한 csv 파일이 output 폴더에 저장됩니다.
+- 최종 예측한 csv 파일이 output 폴더에 저장됩니다.  
 
+#### 4-1. Hard voting (Ensemble)
+- inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
+- hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
   
-## 추가 모듈
+## 추가 기능
 ### 1. Relabeling  
 ![image](https://user-images.githubusercontent.com/113486402/233954582-70a43065-7586-483e-abf5-707e744eebb3.png)  
 - relabeling이 필요한 id 목록을 list에 넣어서 relabel_dict 딕셔너리에 넣어주었습니다.
 - maskbasedataset.py에서 추가로 relabeling이 필요한 id가 있다면 간단하게 해당 list에 넣어주기만 하면 relabeling을 수행합니다.  
 
-### 2. Data oversampling  
-```bash  
-python finetune.py --old-aug True
-```  
-- 저희는 Old class의 train dataset이 적은 것을 어느정도 해결하기 위해 Old class data만 추가로 over sampling 하는 코드 또한 구현했습니다.  
-- finetune 파일을 실행할 때에, <--old-aug True> 로 argument를 추가해주면, Old class data만 한 번 더 추가하여 학습하도록 설계했습니다.
-- 해당 data에 augmentation을 따로 설정해주기 위해, maskbasedataset.py 에서 get_transform 함수에 추가로 'train2' augmentation을 추가해 주었습니다.
-
-### 3. Wandb  
+### 2. Optuna  
 - 
-
-### 4. Optuna  
-- 
-
-### 5. Hard voting (Ensemble)
-- inference.py 를 통해 예측된 output.csv 여러개의 결과값을 가지고 최종적으로 hard voting을 수행하는 Ensemble 또한 구현했습니다.  
-- hard_voting.ipynb 을 실행하여, 앙상블을 원하는 csv를 가지고 hard voting을 수행할 수 있습니다. 
-
-### 6. Contrastive learning  
-- 
-
-
-
 
 
 
