@@ -99,7 +99,7 @@ def parse_arguments():
         default=False,
     )
     parser.add_argument(
-        "--loss_fn",
+        "--loss-fn",
         default='CrossEntropyLoss',
         help='Loss function used in training'
     )
