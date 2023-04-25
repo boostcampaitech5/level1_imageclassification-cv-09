@@ -103,6 +103,7 @@ python validation.py --model-name {모델명.pt 파일}
 - 우리가 학습한 모델을 가지고 동일한 validation set에서 어떤 class가 예측을 잘못했는지 출력해주는 부분입니다.
 - 해당 모델.pt를 학습했을 때, 사용했던 seed 값을 동일하게 유지해 주어야 정확한 확률과 예측값이 나옵니다.
 - 아래 그림은 출력 예시입니다.   
+![image](https://user-images.githubusercontent.com/113486402/234260857-a5175967-8a7c-4c0b-bcfd-a63f7fb1559c.png)
 
 #### 1-2. Weighted Ensemble  
 - "--weighted-ensemble" argument를 이용하여 사용할 수 있습니다.
