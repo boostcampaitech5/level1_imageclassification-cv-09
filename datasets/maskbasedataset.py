@@ -248,16 +248,6 @@ class MaskBaseDataset(Dataset):
         torch.utils.data.Subset 클래스 둘로 나눕니다.
         구현이 어렵지 않으니 구글링 혹은 IDE (e.g. pycharm) 의 navigation 기능을 통해 코드를 한 번 읽어보는 것을 추천드립니다^^
         """
-        # if test_ratio is not None : 
-        #     n_val = int(len(self) * val_ratio)
-        #     n_test = int(len(self) * test_ratio)
-        #     n_train = len(self) - n_val - n_test
-        #     if random_seed != -1 : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test], generator=torch.Generator().manual_seed(random_seed))
-        #     else : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test])
-
-        #     return train_set, val_set, test_set
 
         if val_ratio is None : 
             val_ratio = 1.
@@ -272,14 +262,6 @@ class MaskBaseDataset(Dataset):
         return train_set, val_set
 
     def populate_test(self, val_ratio=0.2, random_seed=42):
-        # self.test_dataset = self.get_test_dataset()
-        # self.test_loader = torch.utils.data.DataLoader(
-        #     self.test_dataset,
-        #     batch_size=self.batch_size,
-        #     num_workers=self.num_workers,
-        #     pin_memory=True,
-        #     sampler=self.get_test_sampler()
-        # )
         transform = get_transforms()
         
         _, val_set = self.split_dataset(val_ratio=val_ratio, random_seed=random_seed)
@@ -455,16 +437,6 @@ class AgeDataset(Dataset):
         torch.utils.data.Subset 클래스 둘로 나눕니다.
         구현이 어렵지 않으니 구글링 혹은 IDE (e.g. pycharm) 의 navigation 기능을 통해 코드를 한 번 읽어보는 것을 추천드립니다^^
         """
-        # if test_ratio is not None : 
-        #     n_val = int(len(self) * val_ratio)
-        #     n_test = int(len(self) * test_ratio)
-        #     n_train = len(self) - n_val - n_test
-        #     if random_seed != -1 : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test], generator=torch.Generator().manual_seed(random_seed))
-        #     else : 
-        #         train_set, val_set, test_set = random_split(self, [n_train, n_val, n_test])
-
-        #     return train_set, val_set, test_set
 
         if val_ratio is None : 
             val_ratio = 1.
@@ -479,20 +451,11 @@ class AgeDataset(Dataset):
         return train_set, val_set
 
     def populate_test(self, val_ratio=0.2, random_seed=42):
-        # self.test_dataset = self.get_test_dataset()
-        # self.test_loader = torch.utils.data.DataLoader(
-        #     self.test_dataset,
-        #     batch_size=self.batch_size,
-        #     num_workers=self.num_workers,
-        #     pin_memory=True,
-        #     sampler=self.get_test_sampler()
-        # )
         transform = get_transforms()
         
         _, val_set = self.split_dataset(val_ratio=val_ratio, random_seed=random_seed)
 
         val_set.dataset.set_transform(transform['val'])
-        # print('test_set[0]', test_set[0])
 
         self.test_loader = torch.utils.data.DataLoader(
             val_set,
@@ -542,7 +505,6 @@ def get_transforms(need=('train', 'val'), img_size=(224, 224)):
             ToTensorV2(p=1.0),
         ], p=1.0)
     return transformations
-
 
 class TestDataset(Dataset):
     def __init__(self, img_paths, resize, mean=(0.56019265, 0.52410305, 0.50145299), std=(0.23308824, 0.24294489, 0.2456003)):
