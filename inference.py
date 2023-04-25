@@ -13,12 +13,12 @@ import math
 # from utils import get_model_from_sd
 
 ###############입력하세요##############
-model_name = 'finetuned_aug_combine0_epoch10.pt'
+model_name = 'final0_epoch20_greedysoup_num16.pt'
 ######################################
 
 def load_model(saved_model, num_classes, device):
 
-    model_path = os.path.join('/opt/ml/model-soups/model', model_name)
+    model_path = os.path.join('/opt/ml/level1_imageclassification-cv-09/model', model_name)
     base_model, preprocess = clip.load('ViT-B/32', 'cuda', jit=False)
     state_dict = torch.load(model_path, map_location=torch.device('cpu'))
     model = get_model_from_sd(state_dict, base_model)
