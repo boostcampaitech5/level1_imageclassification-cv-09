@@ -159,6 +159,8 @@ if __name__ == '__main__':
         val_set.dataset.set_transform(transform['val'])
 
         train_set2.dataset.set_transform(transform['train2'])
+        
+        train_set = ConcatDataset([train_set1, train_set2])
 
     ## 학습 이미지 저장 (Augmentation이 잘 적용됐는지 확인)
     SAVE_IMG = False
