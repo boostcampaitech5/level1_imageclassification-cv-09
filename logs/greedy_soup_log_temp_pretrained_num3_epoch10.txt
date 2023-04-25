@@ -1,4 +1,0 @@
-Potential greedy soup val acc 0.9720982142857143, best so far 0.9720982142857141.Adding to soup. New soup is ['temp_pretrained2_epoch10', 'temp_pretrained1_epoch10']Potential greedy soup val acc 0.9762834821428571, best so far 0.9720982142857143.Adding to soup. New soup is ['temp_pretrained2_epoch10', 'temp_pretrained1_epoch10', 'temp_pretrained0_epoch10']Potential greedy soup val acc 0.9720982142857143, best so far 0.9720982142857141.
-Adding to soup. New soup is ['temp_pretrained2_epoch10', 'temp_pretrained1_epoch10']
-Potential greedy soup val acc 0.9762834821428571, best so far 0.9720982142857143.
-Adding to soup. New soup is ['temp_pretrained2_epoch10', 'temp_pretrained1_epoch10', 'temp_pretrained0_epoch10']

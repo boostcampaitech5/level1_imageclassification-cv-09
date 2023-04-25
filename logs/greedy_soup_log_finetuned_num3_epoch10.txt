@@ -1,2 +1,0 @@
-Potential greedy soup val acc 0.9693080357142857, best so far 0.9704241071428571.
-Potential greedy soup val acc 0.4497767857142857, best so far 0.9704241071428571.
