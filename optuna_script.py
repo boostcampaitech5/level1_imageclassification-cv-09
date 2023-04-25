@@ -13,13 +13,14 @@ from PIL import Image
 import torchvision.transforms.functional as TF
 import copy
 import optuna
+from pytorch_metric_learning import losses
+from torch.utils.data import ConcatDataset
 
 from timm.data.transforms_factory import transforms_imagenet_train
 
 from datasets.imagenet import ImageNet98p, ImageNet
 from datasets.maskbasedataset import (
     MaskBaseDataset,
-    BaseAugmentation,
     get_transforms,
     grid_image,
 )
@@ -37,6 +38,12 @@ import datasets.maskbasedataset
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--data-location",
+        type=str,
+        default=os.path.expanduser('/opt/ml/input/data/train/images/'),
+        help="The root directory for the datasets.",
+    )
     parser.add_argument(
         "--model-location",
         type=str,
@@ -68,6 +75,16 @@ def parse_arguments():
         action="store_true",
         default=False,
     )
+    parser.add_argument(
+        "--old-aug",
+        type=bool,
+        default=False,
+    )
+    parser.add_argument(
+        "--loss_fn",
+        default='CrossEntropyLoss',
+        help='Loss function used in training'
+    )
     return parser.parse_args()
 
 
@@ -83,17 +100,7 @@ def objective(trial):
     print("******************* hyper PARAMETERS~!!!!!!! **********************")
     print(hyper_parameters)
     print("Trial : ", trial.number)
-    # wandb.init(
-    #     project="optuna",
-    #     name=trial.number,
-    #     config={
-    #         "batch_size": hyper_parameters["batch"],
-    #         "lr": hyper_parameters["lr"],
-    #         "epochs": hyper_parameters["epochs"],
-    #         "i": hyper_parameters["i"],
-    #         "random_seed": hyper_parameters["random_seed"],
-    #     },
-    # )
+
     # init model & dataset
     class_names = [
         "one",
@@ -116,7 +123,7 @@ def objective(trial):
         "eighteen",
     ]
     base_model, preprocess = clip.load(args.model, "cuda", jit=False)
-    dataset = MaskBaseDataset(data_dir="/opt/ml/input/data/train/images")
+    dataset = MaskBaseDataset(data_dir=args.data_location)
     NUM_CLASSES = len(class_names)
     DEVICE = "cuda"
     if args.custom_template:
@@ -127,10 +134,36 @@ def objective(trial):
 
     ######### dataloader load #########
     # Data Load
-    train_set, val_set = dataset.split_dataset(
-        val_ratio=0.2, random_seed=hyper_parameters["random_seed"]
-    )
-    train_set.dataset = copy.deepcopy(dataset)
+    # 일반
+    if args.old_aug==False: 
+        train_set, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set.dataset = copy.deepcopy(dataset)
+
+        # Augmentation
+        transform = get_transforms()
+
+        train_set.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+    # 특정 클래스인 old class만 따로 증강할 때
+    else:
+        train_set1, val_set = dataset.split_dataset(val_ratio=0.2, random_seed=args.random_seed)
+        train_set1.dataset = copy.deepcopy(dataset)
+
+        need_change_idxs = [i for i, (_, multi_label) in enumerate(dataset) if multi_label % 3 == 2]
+
+        train_set2 = dataset.getSubset(need_change_idxs)
+        train_set2.dataset = copy.deepcopy(dataset)
+
+        # Augmentation
+        transform = get_transforms()
+
+        train_set1.dataset.set_transform(transform['train'])
+        val_set.dataset.set_transform(transform['val'])
+
+        train_set2.dataset.set_transform(transform['train2'])
+        
+        train_set = ConcatDataset([train_set1, train_set2])
+
     train_loader = torch.utils.data.DataLoader(
         train_set,
         batch_size=hyper_parameters["batch"],
@@ -159,6 +192,11 @@ def objective(trial):
     ###################################
     for p in model.parameters():
         p.data = p.data.float()
+        
+    model = model.cuda()
+    devices = [x for x in range(torch.cuda.device_count())]
+    model = torch.nn.DataParallel(model,  device_ids=devices)
+    
     model_parameters = [p for p in model.parameters() if p.requires_grad]
     num_batches = len(train_loader)
     optimizer = torch.optim.AdamW(
@@ -170,7 +208,10 @@ def objective(trial):
         args.warmup_length,
         hyper_parameters["epochs"] * num_batches,
     )
-    loss_fn = torch.nn.CrossEntropyLoss()
+    if args.loss_fn == 'CrossEntropyLoss':
+        loss_fn = torch.nn.CrossEntropyLoss()
+    elif args.loss_fn == 'ContrastiveLoss':
+        loss_fn = losses.ContrastiveLoss(pos_margin=1, neg_margin=1)
 
     for epoch in range(hyper_parameters["epochs"]):
         # Train
@@ -207,13 +248,7 @@ def objective(trial):
                     f"Loss: {loss.item():.6f}\t Acc: {100*correct/count:.2f} \tData (t) {data_time:.3f}\tBatch (t) {batch_time:.3f}",
                     flush=True,
                 )
-                # wandb.log(
-                #     {
-                #         "epoch": epoch,
-                #         "Train loss": loss.item(),
-                #         "Train acc": 100 * correct / count,
-                #     }
-                # )
+
                 correct, count = 0.0, 0.0
 
         # Evaluate
@@ -247,14 +282,6 @@ def objective(trial):
         if trial.should_prune():
             raise optuna.TrialPruned()
 
-    # wandb.log(
-    #     {
-    #         "epoch": epoch + 1,
-    #         "Valid loss": loss.item(),
-    #         "Valid acc": 100 * top1,
-    #     }
-    # )
-    # wandb.finish()
     return loss.item()
 
 
@@ -276,50 +303,50 @@ if __name__ == "__main__":
     TODO : 아래 사진 저장되는 경로 수정
     """
     fig = optuna.visualization.plot_optimization_history(study)
-    fig.write_image("/opt/ml/workspace/optuna_images/optuna_history.png")
+    fig.write_image("./optuna_images/optuna_history.png")
     fig = optuna.visualization.plot_param_importances(study)
-    fig.write_image("/opt/ml/workspace/optuna_images/optuna_param_importances.png")
+    fig.write_image("./optuna_images/optuna_param_importances.png")
     fig = optuna.visualization.plot_parallel_coordinate(study)
-    fig.write_image("/opt/ml/workspace/optuna_images/optuna_parallel_coordinates.png")
+    fig.write_image("./optuna_images/optuna_parallel_coordinates.png")
     fig = optuna.visualization.plot_contour(study)
-    fig.write_image("/opt/ml/workspace/optuna_images/optuna_contour.png")
+    fig.write_image("./optuna_images/optuna_contour.png")
     fig = optuna.visualization.plot_slice(study)
-    fig.write_image("/opt/ml/workspace/optuna_images/optuna_slice_plot.png")
+    fig.write_image("./optuna_images/optuna_slice_plot.png")
 
     # wandb에 plot 업로드
     wandb.init(project="optuna")
     wandb.log(
         {
             "optuna_history": wandb.Image(
-                "/opt/ml/workspace/optuna_images/optuna_history.png"
+                "./optuna_images/optuna_history.png"
             )
         }
     )
     wandb.log(
         {
             "optuna_param_importances": wandb.Image(
-                "/opt/ml/workspace/optuna_images/optuna_param_importances.png"
+                "./optuna_images/optuna_param_importances.png"
             )
         }
     )
     wandb.log(
         {
             "optuna_parallel_coordinates": wandb.Image(
-                "/opt/ml/workspace/optuna_images/optuna_parallel_coordinates.png"
+                "./optuna_images/optuna_parallel_coordinates.png"
             )
         }
     )
     wandb.log(
         {
             "optuna_contour": wandb.Image(
-                "/opt/ml/workspace/optuna_images/optuna_contour.png"
+                "./optuna_images/optuna_contour.png"
             )
         }
     )
     wandb.log(
         {
             "optuna_slice_plot": wandb.Image(
-                "/opt/ml/workspace/optuna_images/optuna_slice_plot.png"
+                "./optuna_images/optuna_slice_plot.png"
             )
         }
     )
