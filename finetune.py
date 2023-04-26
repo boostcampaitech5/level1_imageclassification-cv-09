@@ -200,9 +200,12 @@ if __name__ == '__main__':
 
     #############모델 load#############
     base_model, preprocess = clip.load(args.model, 'cpu', jit=False)
-    model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
-    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-    model = get_model_from_sd_modified(state_dict, base_model, NUM_CLASSES, initial_weights=clf)
+    if args.model == "ViT-B/32" :
+        model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
+        state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+        model = get_model_from_sd_modified(state_dict, base_model, NUM_CLASSES, initial_weights=clf)
+    elif args.model == "ViT-B/16" :
+        model = base_model
     ###################################
 
     for p in model.parameters():
