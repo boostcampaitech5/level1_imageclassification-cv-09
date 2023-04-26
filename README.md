@@ -38,6 +38,7 @@ python main.py --download-models --model-location <where models will be stored>
 python finetune.py --name {모델명} --i {모델 number} --random-seed {시드 설정}
 ```
 - [Model soups](https://github.com/mlfoundations/model-soups/releases/tag/v0.0.2)에서 제공한 pretrained 모델을 18개의 class vector를 output으로 하는 1개의 linear layer를 추가하여 학습합니다. 
+- ViT-B/16 의 경우 Model soups pretrained weight 가 없으므로 clip 라이브러리에서 제공하는 ImageNet pretrained weight 을 사용합니다.
 - `--model {ViT-B/32 | ViT-B/16}` : base 모델 설정
 - `--name` : 저장할 모델 이름
 - `--i` : pretrained model의 index
