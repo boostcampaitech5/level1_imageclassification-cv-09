@@ -120,6 +120,11 @@ python validation.py --model-name {모델명.pt 파일}
 #### 1-1. Weighted Average Ensemble  
 - Age class의 분류 성능을 높이고자 Age 속성만을 분류하는 모델을 학습하여, 이를 전체 class(18개) 분류 모델의 예측값과 weighted sum을 하였습니다.
 - `--weighted-ensemble` : Age class를 학습한 모델명, Default는 None
+```
+python finetune_age.py --name {모델명} --i {모델 number} --random-seed {시드 설정}
+```
+- finetune_age.py는 Age class만을 학습합니다.
+- `--name`, `--i`, `--random-seed`는 finetune.py와 동일하게 설정
 #### 1-2. Soft voting (Ensemble)  
 - 2개의 학습 모델의 각 class의 확률값을 minmax scaling 후 더하는 방법입니다. 
 - `--soft-voting` : soft voting할 모델명, Default는 None 
@@ -160,8 +165,8 @@ python optuna_script.py
 
 ****
 ## Result
-- Private score 3rd 0.7613 / 81.3175
-- Public score 6th 0.7653 / 81.3968
+- Private score 3rd / F1 score - 0.7613 / Accuracy - 81.3175
+- Public score 6th / F1 score - 0.7653 / Accuracy - 81.3968
 ![화면 캡처 2023-04-26 022440](https://user-images.githubusercontent.com/33598545/234355466-63a4c6c0-1b86-4039-a327-15bcf7758db1.png)
 
 
