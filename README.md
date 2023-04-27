@@ -188,3 +188,11 @@ Model soups : [Model soups: averaging weights of multiple fine-tuned models impr
 ViT : https://github.com/google-research/vision_transformer
 
 ContrastiveLoss : https://github.com/KevinMusgrave/pytorch-metric-learning
+
+Optuna : https://optuna.org/
+
+albumentations : https://albumentations.ai/
+
+PyTorch : https://pytorch.org/
+
+Wandb : https://wandb.ai/site
