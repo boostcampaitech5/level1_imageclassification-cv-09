@@ -84,7 +84,7 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "--random-seed", 
+        "--random_seed", 
         type=int,
         default=42,
     )
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     feature_dim = base_model.visual.output_dim
 
     #############모델 load#############
-    base_model, preprocess = clip.load(args.model, 'cpu', jit=False)
+    # base_model, preprocess = clip.load(args.model, 'cpu', jit=False) => main 함수 내 상단에 위치 (중복 제거)
     if args.model == "ViT-B/32" :
         model_path = os.path.join(args.model_location, f'model_{args.i}.pt') 
         state_dict = torch.load(model_path, map_location=torch.device('cpu'))
@@ -227,7 +227,7 @@ if __name__ == '__main__':
         loss_fn = losses.ContrastiveLoss(pos_margin=1, neg_margin=1)
     print("Loss Function : ", args.loss_fn)
 
-    wandb.init(name=f'{args.name}_i{args.i}', config={"batch_size": args.batch_size,
+    wandb.init(name=f'{args.name}_seed{args.random_seed}_i{args.i}', config={"batch_size": args.batch_size,
                     "lr"        : args.lr,
                     "epochs"    : args.epochs,
                     "name"      : args.name,
